@@ -1,6 +1,7 @@
 # Documentation Complète — NathBank & NathStore
 ## Guide de A à Z — Tout ce qu'il faut savoir
 
+
 ---
 
 ## 1. Vue d'ensemble du projet
