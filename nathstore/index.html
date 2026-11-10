@@ -327,7 +327,15 @@
       const grid = document.getElementById('productsGrid');
       const filtered = cat === 'tous' ? produits : produits.filter(p => p.categorie === cat);
       if (!filtered.length) {
-        grid.innerHTML = '<p style="color:var(--text-dim);font-family:\'DM Mono\',monospace;font-size:12px;padding:40px;grid-column:1/-1;text-align:center">Aucun produit dans cette catégorie</p>';
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
+            <div style="font-size:64px;margin-bottom:16px">📦</div>
+            <div style="font-family:'Instrument Serif',serif;font-size:28px;font-style:italic;color:var(--text);margin-bottom:8px">La catégorie est encore vide</div>
+            <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim);letter-spacing:1px;line-height:1.8;max-width:360px;margin:0 auto">
+              Les produits arrivent bientôt ici.<br>
+              Le catalogue est en cours de mise à jour — reviens très vite !
+            </div>
+          </div>`;
         return;
       }
       grid.innerHTML = filtered.map((p, i) => `
