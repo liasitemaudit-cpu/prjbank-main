@@ -1,0 +1,118 @@
+{
+  "build": "h144dbf8_0",
+  "build_number": 0,
+  "depends": [
+    "ucrt >=10.0.20348.0",
+    "vc >=14.3,<15",
+    "vc14_runtime >=14.44.35208"
+  ],
+  "license": "BSD-3-Clause",
+  "license_family": "BSD",
+  "md5": "da40c305e7c470f2b5034401b4c0b09e",
+  "name": "uriparser",
+  "sha256": "ea31ff43ae7558859c19c8fbb15f3b0240258edcb7ceec2af525a2f4347def40",
+  "size": 80677,
+  "subdir": "win-64",
+  "timestamp": 1788175214226,
+  "version": "1.0.2",
+  "fn": "uriparser-1.0.2-h144dbf8_0.conda",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/uriparser-1.0.2-h144dbf8_0.conda",
+  "channel": "https://repo.anaconda.com/pkgs/main/",
+  "extracted_package_dir": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\uriparser-1.0.2-h144dbf8_0",
+  "requested_specs": [],
+  "files": [
+    "Library/lib/cmake/uriparser-1.0.2/uriparser-config-version.cmake",
+    "Library/lib/cmake/uriparser-1.0.2/uriparser-config.cmake",
+    "Library/lib/cmake/uriparser-1.0.2/uriparser-release.cmake",
+    "Library/lib/cmake/uriparser-1.0.2/uriparser.cmake",
+    "Library/lib/uriparser.lib",
+    "Library/include/uriparser/Uri.h",
+    "Library/include/uriparser/UriBase.h",
+    "Library/include/uriparser/UriDefsAnsi.h",
+    "Library/include/uriparser/UriDefsConfig.h",
+    "Library/include/uriparser/UriDefsUnicode.h",
+    "Library/include/uriparser/UriIp4.h",
+    "Library/bin/uriparser.dll"
+  ],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": [
+      {
+        "_path": "Library/lib/cmake/uriparser-1.0.2/uriparser-config-version.cmake",
+        "path_type": "hardlink",
+        "sha256": "d1b841827afeeedd833268cfa0bdb5010bce8a76115cbd8b4c4fcfa71b9761e2",
+        "size_in_bytes": 1904
+      },
+      {
+        "_path": "Library/lib/cmake/uriparser-1.0.2/uriparser-config.cmake",
+        "path_type": "hardlink",
+        "sha256": "3feb4a8f65d9be6dfabd66b2a1e30d61372a90a95ed75d010d41653f02598622",
+        "size_in_bytes": 3149
+      },
+      {
+        "_path": "Library/lib/cmake/uriparser-1.0.2/uriparser-release.cmake",
+        "path_type": "hardlink",
+        "sha256": "a50ab15a411ac0fb9624a9bba815eda6f8a730a9fdb646b9b5c4a31c9abd808a",
+        "size_in_bytes": 948
+      },
+      {
+        "_path": "Library/lib/cmake/uriparser-1.0.2/uriparser.cmake",
+        "path_type": "hardlink",
+        "sha256": "fd147d25a5825a8bb27c8339e56cb7811fb8dbdc24cfb0787ca0ebb8e23c0e65",
+        "size_in_bytes": 4241
+      },
+      {
+        "_path": "Library/lib/uriparser.lib",
+        "path_type": "hardlink",
+        "sha256": "f18e1a04182e6cc9ed26860e47017f8c48e6193c24a0d74962cba1614e88a6e0",
+        "size_in_bytes": 37970
+      },
+      {
+        "_path": "Library/include/uriparser/Uri.h",
+        "path_type": "hardlink",
+        "sha256": "01d7ea78c6c7b61057eb117e4ecc0e6529126d6255c59ae30b850d4003c133f4",
+        "size_in_bytes": 86173
+      },
+      {
+        "_path": "Library/include/uriparser/UriBase.h",
+        "path_type": "hardlink",
+        "sha256": "65e82cf768ee16449738e66a05047c88679fc930fa5bbc69b3d8a7cf50a36038",
+        "size_in_bytes": 15170
+      },
+      {
+        "_path": "Library/include/uriparser/UriDefsAnsi.h",
+        "path_type": "hardlink",
+        "sha256": "d4262acd6b5e09863aae420954b0a9010e127e75d13468094e34ff5ffbb51aca",
+        "size_in_bytes": 2579
+      },
+      {
+        "_path": "Library/include/uriparser/UriDefsConfig.h",
+        "path_type": "hardlink",
+        "sha256": "b3471b1e954a431b299f714fab628a4e3f62fbe3311845a5b79391fed24dd5b2",
+        "size_in_bytes": 3364
+      },
+      {
+        "_path": "Library/include/uriparser/UriDefsUnicode.h",
+        "path_type": "hardlink",
+        "sha256": "fc98cffbfa90df8664aef6cb990b8a44a106bb63d2da826209f55817f8970934",
+        "size_in_bytes": 2596
+      },
+      {
+        "_path": "Library/include/uriparser/UriIp4.h",
+        "path_type": "hardlink",
+        "sha256": "79a236c84df63f75d39ad25c23aff5a4be11475d364da18b2918db908728a176",
+        "size_in_bytes": 3735
+      },
+      {
+        "_path": "Library/bin/uriparser.dll",
+        "path_type": "hardlink",
+        "sha256": "f24d59e67d12bfed236446a682d11d54e2eda00ad09d1da9c99cf68d43823c7e",
+        "size_in_bytes": 144200
+      }
+    ]
+  },
+  "link": {
+    "source": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\uriparser-1.0.2-h144dbf8_0",
+    "type": 1
+  }
+}

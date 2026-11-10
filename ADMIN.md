@@ -1,6 +1,6 @@
 # 🔐 Identifiants d'accès — NathBank & NathStore
 
-> **Attention :** Ces identifiants sont pour usage local en développement. Ne les partagez jamais en production.
+> **Attention :** Ces identifiants sont pour usage local en développement. Ne les partagez jamais en production. Les valeurs réelles des mots de passe et clés secrètes sont stockées dans `.env` (fichier ignoré par Git, non versionné).
 
 ---
 
@@ -9,7 +9,7 @@
 | Champ | Valeur |
 |-------|--------|
 | **Email** | `nathanael@straumann.me` |
-| **Mot de passe** | `Nathlecon1234` |
+| **Mot de passe** | (voir `.env` / compte créé à l'inscription) |
 | **Solde de départ** | 100€ |
 
 ### Créer un compte
@@ -22,9 +22,12 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Email** | `nathanael@straumann.me` |
-| **Mot de passe** | `Nathlecon1234` |
+| **Email** | (compte admin créé via `/api/admin/setup`) |
+| **Mot de passe** | (défini lors de la création du compte admin) |
 | **Token stocké dans** | `localStorage.adminToken` |
+
+### Créer le premier compte admin
+Appeler `POST /api/admin/setup` avec `{ email, mot_de_passe, secret: 'NATHSTORE_ADMIN_2026' }`.
 
 ---
 
@@ -32,33 +35,19 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Email** | `nathanael@straumann.me` |
-| **Mot de passe** | `Nathlecon1234` |
-| **Nom** | `Nathanael` |
+| **Email** | (compte créé à l'inscription) |
+| **Mot de passe** | (défini lors de l'inscription) |
 | **Token stocké dans** | cookie `token` (httpOnly) |
-
-### Créer un compte
-```bash
-curl -X POST http://localhost:3001/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"nathanael@straumann.me","password":"Nathlecon1234","name":"Nathanael"}'
-```
-
-### Se connecter
-```bash
-curl -X POST http://localhost:3001/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"nathanael@straumann.me","password":"Nathlecon1234"}'
-```
 
 ---
 
 ## 🔑 Clés secrètes JWT
 
-| Type | Secret | Où utilisé |
-|------|--------|-----------|
-| **Utilisateur** | `mon_secret_jwt_super_secure_123` | `auth.js`, `middleware/auth.js` |
-| **Admin** | `admin_secret_nathstore_456` | `routes/admin.js`, `routes/categories.js` |
+Les secrets sont définis dans `.env` (non versionné) :
+- `JWT_SECRET` — utilisé par `auth.js` et `middleware/auth.js`
+- `JWT_SECRET_ADMIN` — utilisé par `routes/admin.js` et `routes/categories.js`
+
+Valeurs par défaut (développement uniquement) définies dans `.env`.
 
 ---
 
@@ -89,7 +78,7 @@ curl -X POST http://localhost:3001/api/auth/login \
 
 | Fichier | Chemin | Utilité |
 |---------|--------|---------|
-| `.env` | `banque/.env` | `GITHUB_TOKEN=...` pour les stats GitHub |
+| `.env` | `banque/.env` | `GITHUB_TOKEN`, `JWT_SECRET`, `JWT_SECRET_ADMIN` |
 | `start-all.bat` | racine | Lance tout (serveurs + navigateurs) |
 | `banque/start.bat` | `banque/` | Lance le serveur Banque |
 | `banque/start.ps1` | `banque/` | Lance le serveur Banque (PowerShell) |
@@ -109,7 +98,10 @@ cd banque && node index.js
 # 2. Serveur NathNotes (port 3001)
 cd nathnotes && node server.js
 
-# 3. VS Code Live Server sur prjbank-main (port 5500)
+# 3. Serveur NathChat (port 3002)
+cd nathchat && node server.js
+
+# 4. VS Code Live Server sur le port 5500
 ```
 
 **URLs :**
@@ -117,5 +109,22 @@ cd nathnotes && node server.js
 - NathStore : `http://127.0.0.1:5500/nathstore`
 - Admin : `http://127.0.0.1:5500/nathstore/admin.html`
 - NathNotes : `http://127.0.0.1:5500/nathnotes`
+- NathChat : `http://127.0.0.1:5500/nathchat`
 - API Banque : `http://localhost:3000`
 - API Notes : `http://localhost:3001`
+- API Chat : `http://localhost:3002`
+
+---
+
+## 📋 Procédure seed (produits de démo)
+
+1. Créer le premier compte admin via `POST /api/admin/setup` (clé secrète : `NATHSTORE_ADMIN_2026`).
+2. Lancer le serveur Banque (`cd banque && node index.js`).
+3. Exécuter le seed : `cd banque && node seed.js`.
+4. Les 20 produits de démo sont insérés dans la base.
+
+---
+
+## ⚠️ Sécurité
+
+Ce projet est développé dans un contexte éducatif (Bac Pro CIEL / SNT) pour un usage local uniquement. Les secrets, mots de passe et tokens ne doivent jamais être commités ni versionnés. Le fichier `.env` est ignoré par Git via `.gitignore`.

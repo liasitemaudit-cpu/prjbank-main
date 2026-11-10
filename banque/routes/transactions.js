@@ -28,8 +28,8 @@ router.get('/historique', authMiddleware, (req, res) => {
     const compte = db.get('SELECT id FROM comptes WHERE user_id = ?', [req.user.id]);
     if (!compte) return res.status(404).json({ erreur: 'Compte introuvable' });
     
-    const transactions = db.all('SELECT * FROM transactions WHERE de_compte = ? ORDER BY created_at DESC',
-      [compte.id]
+    const transactions = db.all('SELECT * FROM transactions WHERE de_compte = ? OR vers_compte = ? ORDER BY created_at DESC',
+      [compte.id, compte.id]
     );
     res.json(transactions);
   } catch (err) {

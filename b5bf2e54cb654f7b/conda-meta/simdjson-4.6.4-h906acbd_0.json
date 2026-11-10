@@ -1,0 +1,93 @@
+{
+  "build": "h906acbd_0",
+  "build_number": 0,
+  "depends": [
+    "ucrt >=10.0.20348.0",
+    "vc >=14.3,<15",
+    "vc14_runtime >=14.44.35208"
+  ],
+  "license": "Apache-2.0",
+  "license_family": "Apache",
+  "md5": "6fb10ecd7457de7ee6dcb3aa5cee84c8",
+  "name": "simdjson",
+  "sha256": "9c1c6a079e8e8e8b758e0b83198d9e43cd8627a40d2a9da68d16de961ad3124c",
+  "size": 381446,
+  "subdir": "win-64",
+  "timestamp": 1779779098135,
+  "version": "4.6.4",
+  "fn": "simdjson-4.6.4-h906acbd_0.conda",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/simdjson-4.6.4-h906acbd_0.conda",
+  "channel": "https://repo.anaconda.com/pkgs/main/",
+  "extracted_package_dir": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\simdjson-4.6.4-h906acbd_0",
+  "requested_specs": [],
+  "files": [
+    "Library/lib/pkgconfig/simdjson.pc",
+    "Library/bin/simdjson.dll",
+    "Library/lib/cmake/simdjson/simdjson-config-version.cmake",
+    "Library/lib/cmake/simdjson/simdjson-config.cmake",
+    "Library/lib/cmake/simdjson/simdjsonTargets-release.cmake",
+    "Library/lib/cmake/simdjson/simdjsonTargets.cmake",
+    "Library/lib/simdjson.lib",
+    "Library/include/simdjson.h"
+  ],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": [
+      {
+        "_path": "Library/lib/pkgconfig/simdjson.pc",
+        "path_type": "hardlink",
+        "sha256": "4ce75c5a1af72060b72f6707d2d2245d43400f5a3a36e0d798d40430427e6d13",
+        "sha256_in_prefix": "e15ed9590745f60648b56e218cc3131d3047b9ab9e87e89cca2e4fdef59199d1",
+        "size_in_bytes": 317,
+        "file_mode": "text",
+        "prefix_placeholder": "C:/Users/task_177977880576230/croot/simdjson-split_1779778936054/_h_env"
+      },
+      {
+        "_path": "Library/bin/simdjson.dll",
+        "path_type": "hardlink",
+        "sha256": "9eb80fd9a46e3a48d6cc31e628cc8b495eae233b03574535e47804ef75e63761",
+        "size_in_bytes": 779592
+      },
+      {
+        "_path": "Library/lib/cmake/simdjson/simdjson-config-version.cmake",
+        "path_type": "hardlink",
+        "sha256": "09579de7dd392222c873bf08f0cdd5c725998501efa49e4acd8c1f816e6b9b70",
+        "size_in_bytes": 3760
+      },
+      {
+        "_path": "Library/lib/cmake/simdjson/simdjson-config.cmake",
+        "path_type": "hardlink",
+        "sha256": "237824084d3581830d8719ee82187c9e90591a0c7cf06a5abed2a2f66569b997",
+        "size_in_bytes": 220
+      },
+      {
+        "_path": "Library/lib/cmake/simdjson/simdjsonTargets-release.cmake",
+        "path_type": "hardlink",
+        "sha256": "969a7ca10cac60acf25c6dd25f9a7369c132bac4a56aabb417565eb881769e34",
+        "size_in_bytes": 934
+      },
+      {
+        "_path": "Library/lib/cmake/simdjson/simdjsonTargets.cmake",
+        "path_type": "hardlink",
+        "sha256": "fde2e3c6c5246be829cf605caaad5f245c00dc96df5724a12832806a2fb85b2f",
+        "size_in_bytes": 4436
+      },
+      {
+        "_path": "Library/lib/simdjson.lib",
+        "path_type": "hardlink",
+        "sha256": "df793d3c6ad1e8c6aa8169c6e1625c57227dbc0a3f05ac4f564830b2f75dc3c5",
+        "size_in_bytes": 183336
+      },
+      {
+        "_path": "Library/include/simdjson.h",
+        "path_type": "hardlink",
+        "sha256": "fec0cb4559e25456789efb153b7e5eaa27b50ce2bc2c9d3b531ea2000928380a",
+        "size_in_bytes": 7724701
+      }
+    ]
+  },
+  "link": {
+    "source": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\simdjson-4.6.4-h906acbd_0",
+    "type": 1
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "build": "hb4df093_1",
+  "build_number": 1,
+  "depends": [
+    "libbrotlicommon 1.2.1 h27f1b8e_1",
+    "ucrt >=10.0.20348.0",
+    "vc >=14.3,<15",
+    "vc14_runtime >=14.44.35208"
+  ],
+  "license": "MIT",
+  "license_family": "MIT",
+  "md5": "3a55271aa95f8e98dd526a128d178cd1",
+  "name": "libbrotlienc",
+  "sha256": "7fe9082f8025a973cea6783739b6dce461e4661b4bbd4c2f921e094784f97267",
+  "size": 260611,
+  "subdir": "win-64",
+  "timestamp": 1793802912591,
+  "version": "1.2.1",
+  "fn": "libbrotlienc-1.2.1-hb4df093_1.conda",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/libbrotlienc-1.2.1-hb4df093_1.conda",
+  "channel": "https://repo.anaconda.com/pkgs/main/",
+  "extracted_package_dir": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\libbrotlienc-1.2.1-hb4df093_1",
+  "requested_specs": [],
+  "files": [
+    "Library/bin/brotlienc.dll",
+    "Library/lib/brotlienc.lib",
+    "Library/lib/pkgconfig/libbrotlienc.pc"
+  ],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": [
+      {
+        "_path": "Library/bin/brotlienc.dll",
+        "path_type": "hardlink",
+        "sha256": "4d73c40161046600609a31c66f6f78c86abd7201bf6f10141856f88c04237825",
+        "size_in_bytes": 691016
+      },
+      {
+        "_path": "Library/lib/brotlienc.lib",
+        "path_type": "hardlink",
+        "sha256": "7d624f40f69fa41fd1db455c2398f31c4365b6ceb34316c3577bf8a5c8ec8c83",
+        "size_in_bytes": 4990
+      },
+      {
+        "_path": "Library/lib/pkgconfig/libbrotlienc.pc",
+        "path_type": "hardlink",
+        "sha256": "7e3247de31cab03ce74c9b97aa7f4c622a02428c483a3c64b17427e28a3875d2",
+        "sha256_in_prefix": "5f90473f6f3369883c889470cfbe7d04a23fabe6625a5d804c9c477daab0e6d8",
+        "size_in_bytes": 403,
+        "file_mode": "text",
+        "prefix_placeholder": "C:/Users/task_179380246111495/croot/brotli-split_1793802751695/_h_env"
+      }
+    ]
+  },
+  "link": {
+    "source": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\libbrotlienc-1.2.1-hb4df093_1",
+    "type": 1
+  }
+}

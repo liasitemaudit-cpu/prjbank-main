@@ -22,7 +22,7 @@ router.post('/deposer', authMiddleware, (req, res) => {
     return res.status(400).json({ erreur: 'Montant invalide' });
   }
 
-  if (montant > 10000000000000) {
+  if (montant > 10000) {
     return res.status(400).json({ erreur: 'Dépôt maximum : 10 000€' });
   }
 

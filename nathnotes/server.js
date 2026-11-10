@@ -312,19 +312,23 @@ app.delete('/api/notes/:id', authenticate, (req, res) => {
   res.json({ success: true });
 });
 
-// POST /api/notes/:id/restore - restaurer depuis la corbeille
-app.post('/api/notes/:id/restore', authenticate, (req, res) => {
+// DELETE /api/notes/:id/permanent - suppression définitive
+app.delete('/api/notes/:id/permanent', authenticate, (req, res) => {
   const { id } = req.params;
-  
+
   const note = get('SELECT * FROM notes WHERE id = ? AND user_id = ?', [id, req.userId]);
   if (!note) {
     return res.status(404).json({ error: 'Note non trouvée' });
   }
-  
-  run('UPDATE notes SET deleted = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [id]);
-  
+
+  run('DELETE FROM notes WHERE id = ?', [id]);
+
   res.json({ success: true });
 });
+
+// POST /api/notes/:id/restore - restaurer depuis la corbeille
+app.post('/api/notes/:id/restore', authenticate, (req, res) => {
+  const { id } = req.params;
 
 // GET /api/folders - récupérer les dossiers
 app.get('/api/folders', authenticate, (req, res) => {

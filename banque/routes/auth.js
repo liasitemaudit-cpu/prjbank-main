@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../database');
 
-const SECRET = 'mon_secret_jwt_super_secure_123';
+const SECRET = process.env.JWT_SECRET || 'mon_secret_jwt_super_secure_123';
 
 router.post('/register', (req, res) => {
   const { nom, email, mot_de_passe } = req.body;

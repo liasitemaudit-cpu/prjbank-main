@@ -3,7 +3,7 @@ const router = express.Router();
 const { run, get, all } = require('../database');
 const jwt = require('jsonwebtoken');
 
-const SECRET_ADMIN = 'admin_secret_nathstore_456';
+const SECRET_ADMIN = process.env.JWT_SECRET_ADMIN || 'admin_secret_nathstore_456';
 
 function adminAuth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
@@ -47,6 +47,9 @@ router.post('/', adminAuth, (req, res) => {
 router.put('/:id', adminAuth, (req, res) => {
   const { nom, emoji, ordre } = req.body;
   if (!nom || !emoji) return res.status(400).json({ erreur: 'nom et emoji requis' });
+
+  const existant = db.get('SELECT id FROM categories WHERE id = ?', [req.params.id]);
+  if (!existant) return res.status(404).json({ erreur: 'Catégorie introuvable' });
 
   if (!/^[a-z0-9-]+$/.test(nom)) {
     return res.status(400).json({ erreur: 'Le nom doit être en minuscules, sans espaces ni caractères spéciaux' });

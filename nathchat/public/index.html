@@ -291,7 +291,7 @@
       if (!username || !password) { err.textContent = 'remplissez tous les champs'; err.className = 'message error show'; return; }
       btn.disabled = true; btn.textContent = 'connexion…'; err.className = 'message error';
       try {
-        const res = await fetch('http://localhost:3000/api/login', {
+        const res = await fetch('http://localhost:3000/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
@@ -299,7 +299,7 @@
         const data = await res.json();
         if (!res.ok) { err.textContent = data.error || 'identifiants incorrects'; err.className = 'message error show'; btn.disabled = false; btn.textContent = 'se connecter'; return; }
         token = data.token;
-        currentUser = { userId: data.userId || data.id, username: data.username || username };
+        currentUser = { userId: data.id, username: data.nom || username };
         localStorage.setItem('nathchat_token', token);
         localStorage.setItem('nathchat_user', JSON.stringify(currentUser));
         showApp();
@@ -343,6 +343,7 @@
         case 'room_history': if (data.roomId === currentRoomId) renderHistory(data.messages); break;
         case 'new_message': if (data.message.room_id === currentRoomId) appendMessage(data.message); break;
         case 'reaction_update': updateReactions(data.messageId, data.reactions); break;
+        case 'message_deleted': removeMessage(data.messageId); break;
         case 'user_typing': if (data.roomId === currentRoomId && data.username !== currentUser.username) showTyping(data.username); break;
         case 'system': if (data.roomId === currentRoomId) appendSystem(data.message); break;
         case 'error': console.error('ws error:', data.message); break;
@@ -405,7 +406,7 @@
           <div class="msg-text">${escapeHtml(msg.content)}</div>
           <div class="msg-reactions" id="reactions-${msg.id}">${renderReactionPills(msg.id, msg.reactions || [])}</div>
         </div>
-        <div class="msg-actions"><button class="action-btn" onclick="toggleEmojiPicker(event, ${msg.id})" title="réagir">😊</button></div>
+        <div class="msg-actions"><button class="action-btn" onclick="toggleEmojiPicker(event, ${msg.id})" title="réagir">😊</button>${isSelf ? `<button class="action-btn" onclick="deleteMessage(${msg.id})" title="supprimer">🗑️</button>` : ''}</div>
       `;
       container.appendChild(group);
       if (scroll) scrollBottom();
@@ -466,8 +467,17 @@
       typingTimeout = setTimeout(() => { el.textContent = ''; }, 2500);
     }
 
+    function deleteMessage(msgId) {
+      if (!confirm('Supprimer ce message ?')) return;
+      wsSend({ type: 'delete_message', payload: { messageId: msgId, roomId: currentRoomId } });
+    }
+
+    function removeMessage(msgId) {
+      const el = document.querySelector(`[data-msg-id="${msgId}"]`);
+      if (el) el.remove();
+    }
+
     function renderOnlineUsers(users) {
-      document.getElementById('online-count').textContent = users.length;
       document.getElementById('online-badge-count').textContent = users.length;
       const list = document.getElementById('online-list');
       list.innerHTML = users.map(u => `<div class="online-user"><div class="online-avatar">${u.username[0].toUpperCase()}</div>${u.username}</div>`).join('');

@@ -427,12 +427,26 @@
     function openCart() { document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); }
     function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartSidebar').classList.remove('open'); }
 
-    function openPayModal() {
+    async function openPayModal() {
       const total = Object.entries(cart).filter(([id]) => produits.find(p => p.id == id)).reduce((sum, [id, qty]) => sum + produits.find(p => p.id == id).prix * qty, 0);
+      try {
+        const res = await fetch(`${API}/api/comptes/solde`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+        const data = await res.json();
+        if (data.solde < total) {
+          document.getElementById('modalTotal').textContent = total.toFixed(2) + ' €';
+          document.getElementById('payUserName').textContent = userName || '—';
+          document.getElementById('payMsg').textContent = `Solde insuffisant (${data.solde.toFixed(2)} €) pour ce panier (${total.toFixed(2)} €).`;
+          document.getElementById('payMsg').className = 'message error show';
+          document.getElementById('payModal').classList.add('open');
+          document.getElementById('payModal').querySelector('button:last-child').disabled = true;
+          return;
+        }
+      } catch {}
       document.getElementById('modalTotal').textContent = total.toFixed(2) + ' €';
       document.getElementById('payUserName').textContent = userName || '—';
       document.getElementById('payModal').classList.add('open');
       document.getElementById('payMsg').className = 'message';
+      document.getElementById('payModal').querySelector('button:last-child').disabled = false;
     }
     function closePayModal() { document.getElementById('payModal').classList.remove('open'); }
 

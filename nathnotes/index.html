@@ -443,7 +443,33 @@
 
     function showTrash() {
       const container = document.getElementById('notesItems');
-      container.innerHTML = '<div class="empty-state"><div style="font-size:2rem;margin-bottom:0.5rem;">🗑️</div><div style="font-family:\'Source Serif 4\',serif;font-weight:600;font-size:1rem;">corbeille</div><div style="font-size:0.9rem;margin-top:0.4rem;">restaurez une note depuis l\'api</div></div>';
+      const trash = notes.filter(n => n.deleted === 1 || n.deleted === '1');
+      if (!trash.length) {
+        container.innerHTML = '<div class="empty-state"><div style="font-size:2rem;margin-bottom:0.5rem;">🗑️</div><div style="font-family:\'Source Serif 4\',serif;font-weight:600;font-size:1rem;">corbeille vide</div></div>';
+        return;
+      }
+      container.innerHTML = trash.map(note => `
+        <div class="note-item ${currentNote?.id === note.id ? 'active' : ''}" onclick="openNote(${note.id})" tabindex="0">
+          <div class="note-title">🗑️ ${note.title || 'sans titre'}</div>
+          <div class="note-preview">${(note.content || '').replace(/<[^>]*>/g,'').substring(0, 80)}</div>
+          <div class="note-date">${formatDate(note.updated_at)}</div>
+          <button type="button" style="margin-top:0.5rem;padding:0.4rem 0.8rem;font-size:0.8rem;background:var(--ink);color:#ffffff;border:none;cursor:pointer;" onclick="event.stopRestore || (event.stopPropagation(), restoreNote(${note.id}))">restaurer</button>
+          <button type="button" style="margin-top:0.5rem;margin-left:0.5rem;padding:0.4rem 0.8rem;font-size:0.8rem;background:#b3261e;color:#ffffff;border:none;cursor:pointer;" onclick="event.stopPropagation(), supprimerPermanent(${note.id})">supprimer définitivement</button>
+        </div>
+      `).join('');
+    }
+
+    async function supprimerPermanent(id) {
+      if (!confirm('Supprimer définitivement cette note ?')) return;
+      await apiCall(`/notes/${id}/permanent`, { method: 'DELETE' });
+      loadNotes();
+      renderNotesList();
+    }
+
+    async function restoreNote(id) {
+      await apiCall(`/notes/${id}/restore`, { method: 'POST' });
+      loadNotes();
+      renderNotesList();
     }
 
     async function createFolder() {

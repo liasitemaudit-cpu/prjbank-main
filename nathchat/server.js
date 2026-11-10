@@ -163,6 +163,15 @@ app.get('/api/rooms/:id/messages', (req, res) => {
   res.json(withReactions);
 });
 
+app.delete('/api/messages/:id', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!verifyToken(token)) return res.status(401).json({ error: 'Non autorisé' });
+  const { id } = req.params;
+  db.run("DELETE FROM messages WHERE id = ?", [id]);
+  saveDB();
+  res.json({ success: true });
+});
+
 app.post('/api/rooms', (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!verifyToken(token)) return res.status(401).json({ error: 'Non autorisé' });
@@ -283,6 +292,16 @@ wss.on('connection', (ws) => {
         username: client.username,
         roomId
       }, ws);
+      return;
+    }
+
+    // ── Supprimer un message ─────────────────────────────────────────────
+    if (type === 'delete_message') {
+      const { messageId, roomId } = payload;
+      db.run("DELETE FROM messages WHERE id = ?", [messageId]);
+      saveDB();
+      broadcastToRoom(roomId, { type: 'message_deleted', messageId });
+      ws.send(JSON.stringify({ type: 'message_deleted', messageId }));
       return;
     }
   });

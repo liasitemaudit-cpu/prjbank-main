@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../database');
 
-const SECRET_ADMIN = 'admin_secret_nathstore_456';
+const SECRET_ADMIN = process.env.JWT_SECRET_ADMIN || 'admin_secret_nathstore_456';
 
 // ─── MIDDLEWARE ADMIN ───
 function adminAuth(req, res, next) {
@@ -84,7 +84,10 @@ router.post('/produits', adminAuth, (req, res) => {
 // ─── MODIFIER PRODUIT ───
 router.put('/produits/:id', adminAuth, (req, res) => {
   const { nom, emoji, categorie, prix, description, badge, actif } = req.body;
-  
+
+  const existant = db.get('SELECT id FROM produits WHERE id = ?', [req.params.id]);
+  if (!existant) return res.status(404).json({ erreur: 'Produit introuvable' });
+
   try {
     db.run(
       'UPDATE produits SET nom=?, emoji=?, categorie=?, prix=?, description=?, badge=?, actif=? WHERE id=?',
@@ -98,6 +101,9 @@ router.put('/produits/:id', adminAuth, (req, res) => {
 
 // ─── SUPPRIMER PRODUIT ───
 router.delete('/produits/:id', adminAuth, (req, res) => {
+  const existant = db.get('SELECT id FROM produits WHERE id = ?', [req.params.id]);
+  if (!existant) return res.status(404).json({ erreur: 'Produit introuvable' });
+
   try {
     db.run('DELETE FROM produits WHERE id = ?', [req.params.id]);
     res.json({ message: '✅ Produit supprimé !' });

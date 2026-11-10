@@ -1,0 +1,59 @@
+{
+  "build": "h48ca90d_1",
+  "build_number": 1,
+  "depends": [
+    "libbrotlicommon 1.2.1 h27f1b8e_1",
+    "ucrt >=10.0.20348.0",
+    "vc >=14.3,<15",
+    "vc14_runtime >=14.44.35208"
+  ],
+  "license": "MIT",
+  "license_family": "MIT",
+  "md5": "473e68501df39ac1239314bbed03bb83",
+  "name": "libbrotlidec",
+  "sha256": "834bf5cac1276081c203052b2d9cba9295c3a2406c356a7caf9276af76e3b91b",
+  "size": 41688,
+  "subdir": "win-64",
+  "timestamp": 1793802887258,
+  "version": "1.2.1",
+  "fn": "libbrotlidec-1.2.1-h48ca90d_1.conda",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/libbrotlidec-1.2.1-h48ca90d_1.conda",
+  "channel": "https://repo.anaconda.com/pkgs/main/",
+  "extracted_package_dir": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\libbrotlidec-1.2.1-h48ca90d_1",
+  "requested_specs": [],
+  "files": [
+    "Library/lib/brotlidec.lib",
+    "Library/bin/brotlidec.dll",
+    "Library/lib/pkgconfig/libbrotlidec.pc"
+  ],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": [
+      {
+        "_path": "Library/lib/brotlidec.lib",
+        "path_type": "hardlink",
+        "sha256": "cdc16f10b34d8e6de15a31b449cd7c75b55465775aa935cda4e790b78015b1e2",
+        "size_in_bytes": 5110
+      },
+      {
+        "_path": "Library/bin/brotlidec.dll",
+        "path_type": "hardlink",
+        "sha256": "cbb57de56724d3953c25f5f10c3362328d656da553018819b178752a078b3dde",
+        "size_in_bytes": 64328
+      },
+      {
+        "_path": "Library/lib/pkgconfig/libbrotlidec.pc",
+        "path_type": "hardlink",
+        "sha256": "49852e7bf0d9ea82ca724cf94d0278aa0e9a10894b76bb2e7edea0b9c51c3baf",
+        "sha256_in_prefix": "7688feccbe0d5deac524cc851d4bc661462f33255bed2539b8e3191010e80465",
+        "size_in_bytes": 403,
+        "file_mode": "text",
+        "prefix_placeholder": "C:/Users/task_179380246111495/croot/brotli-split_1793802751695/_h_env"
+      }
+    ]
+  },
+  "link": {
+    "source": "C:\\Users\\Install\\AppData\\Local\\rattler\\cache\\pkgs\\libbrotlidec-1.2.1-h48ca90d_1",
+    "type": 1
+  }
+}

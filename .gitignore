@@ -2,5 +2,6 @@ banque/node_modules/
 nathnotes/node_modules
 nathnotes/nathnotes.db
 banque/banque.db
+nathchat/nathchat.db
 .env
 nathchat/node_modules
