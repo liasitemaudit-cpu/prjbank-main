@@ -1,280 +1,347 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NathStore — Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NathStore — Panel admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ── tokens ── */
+    :root {
+      --paper: #f7f5f0;
+      --ink: #141418;
+      --ink-soft: #5a5a66;
+      --rule: #d8d4c8;
+      --border: #c7c2b5;
+      --max-width: 70ch;
+    }
+
+    /* ── reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --accent: #ff4d1c; --accent-2: #ff7a4d; --vert: #4caf7d; --rouge: #e05555; --purple: #a78bfa; }
-    [data-theme="dark"] { --bg: #0a0a0a; --bg-2: #141414; --bg-3: #1e1e1e; --border: #2a2a2a; --text: #f0ece4; --text-dim: #5a5650; --text-mid: #8a8070; }
-    [data-theme="light"] { --bg: #f5f2ee; --bg-2: #ffffff; --bg-3: #ede9e3; --border: #ddd8d0; --text: #1a1714; --text-dim: #b0a898; --text-mid: #7a7060; }
-    body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; transition: background 0.3s, color 0.3s; }
-    .login-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .login-card { background: var(--bg-2); border: 1px solid var(--border); padding: 48px; width: 100%; max-width: 400px; position: relative; }
-    .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
-    .login-logo { font-family: 'Instrument Serif', serif; font-size: 28px; font-style: italic; margin-bottom: 4px; }
-    .login-logo span { color: var(--accent); }
-    .login-sub { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 36px; }
-    .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-    label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); font-family: 'DM Mono', monospace; }
-    input, select, textarea { background: var(--bg-3); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; padding: 12px 16px; outline: none; transition: border-color 0.3s; width: 100%; border-radius: 2px; }
-    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-    input::placeholder, textarea::placeholder { color: var(--text-dim); }
-    textarea { resize: vertical; line-height: 1.5; }
-    .btn { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; border-radius: 2px; margin-top: 8px; }
-    .btn:hover { background: var(--accent-2); }
-    .msg { font-size: 11px; padding: 12px 16px; margin-top: 12px; display: none; letter-spacing: 1px; border-radius: 2px; font-family: 'DM Mono', monospace; }
-    .msg.success { background: rgba(76,175,125,0.1); border: 1px solid rgba(76,175,125,0.3); color: var(--vert); display: block; }
-    .msg.error { background: rgba(255,77,28,0.08); border: 1px solid rgba(255,77,28,0.2); color: var(--accent); display: block; }
-    .msg.info { background: rgba(100,150,255,0.08); border: 1px solid rgba(100,150,255,0.2); color: #7aabff; display: block; }
+    html, body { height: 100%; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 17px;
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    /* ── type ── */
+    h1 { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 2.2rem; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 0.4em; }
+    h2 { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.4rem; line-height: 1.25; margin-bottom: 0.5em; }
+    h3 { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.1rem; line-height: 1.3; margin-bottom: 0.4em; }
+    p { margin-bottom: 1em; max-width: var(--max-width); }
+    small { font-size: 0.85rem; color: var(--ink-soft); }
+    code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; background: #eaddc4; padding: 0.1em 0.35em; border: 1px solid var(--rule); }
+    a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+    a:hover { color: #5a4a2e; }
+    a:focus-visible { outline: 2px solid #5a4a2e; outline-offset: 2px; }
+
+    /* ── layout ── */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .column { max-width: var(--max-width); }
+
+    /* ── header ── */
+    header { border-bottom: 2px solid var(--ink); padding: 1.5rem 0 1rem; margin-bottom: 2rem; }
+    header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .brand { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 1.6rem; text-decoration: none; color: var(--ink); }
+    nav { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    nav a { font-size: 0.9rem; text-decoration: none; color: var(--ink-soft); border: 1px solid var(--border); padding: 0.2em 0.55em; }
+    nav a:hover { border-color: var(--ink); color: var(--ink); background: #eaddc4; }
+
+    /* ── login ── */
+    .login { border: 2px solid var(--ink); background: #ffffff; padding: 2rem; max-width: 400px; margin: 2rem auto; }
+    .login h2 { margin-bottom: 1rem; }
+    .login fieldset { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+    .login .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .login label { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--ink-soft); }
+    .login input { background: #ffffff; border: 1px solid var(--border); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; padding: 0.55rem 0.7rem; outline: none; width: 100%; }
+    .login input:focus { border-color: var(--ink); }
+    .login button { background: var(--ink); color: #ffffff; border: none; padding: 0.6rem 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; letter-spacing: 0.1em; cursor: pointer; margin-top: 0.5rem; }
+    .login button:hover { background: #000; }
+    .login button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .login .message { font-size: 0.85rem; padding: 0.5rem 0.75rem; margin-top: 0.5rem; border: 1px solid var(--border); display: none; }
+    .login .message.show { display: block; }
+    .login .message.success { border-color: #2e7d32; background: #f0f6f0; color: #2e7d32; }
+    .login .message.error { border-color: #b3261e; background: #f9f0f0; color: #b3261e; }
+
+    /* ── panel ── */
     #adminPanel { display: none; }
-    nav { position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); }
-    [data-theme="light"] nav { background: rgba(245,242,238,0.95); }
-    .nav-logo { font-family: 'Instrument Serif', serif; font-size: 20px; font-style: italic; }
-    .nav-logo span { color: var(--accent); }
-    .nav-badge { background: var(--accent); color: white; font-size: 9px; font-weight: 700; letter-spacing: 2px; padding: 3px 10px; border-radius: 100px; margin-left: 10px; }
-    .nav-right { display: flex; gap: 12px; align-items: center; }
-    .btn-sm { background: none; border: 1px solid var(--border); color: var(--text-mid); font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; padding: 7px 16px; cursor: pointer; transition: all 0.2s; border-radius: 2px; text-decoration: none; display: inline-flex; align-items: center; }
-    .btn-sm:hover { border-color: var(--text); color: var(--text); }
-    .btn-sm.danger:hover { border-color: var(--rouge); color: var(--rouge); }
-    .btn-sm.accent { border-color: #7aabff; color: #7aabff; }
-    .btn-sm.accent:hover { background: #7aabff; color: #000; }
-    main { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
-    .stat { background: var(--bg-2); border: 1px solid var(--border); padding: 24px; border-radius: 4px; }
-    .stat-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
-    .stat-value { font-family: 'Instrument Serif', serif; font-size: 36px; font-style: italic; color: var(--accent); }
-    .stat-value.purple { color: var(--purple); }
-    .section-title { font-family: 'Instrument Serif', serif; font-size: 24px; font-style: italic; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .add-form { background: var(--bg-2); border: 1px solid var(--border); padding: 32px; border-radius: 4px; margin-bottom: 40px; position: relative; }
-    .add-form::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); border-radius: 4px 4px 0 0; }
-    .add-form.purple-top::before { background: var(--purple); }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 80px; gap: 16px; margin-bottom: 20px; }
-    .btn-add { background: var(--accent); color: white; border: none; padding: 12px 28px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; border-radius: 2px; }
-    .btn-add:hover { background: var(--accent-2); }
-    .btn-add.purple { background: var(--purple); color: #000; }
-    .btn-add.purple:hover { background: #c4b5fd; }
-    .import-section { background: var(--bg-2); border: 1px solid var(--border); padding: 32px; border-radius: 4px; margin-bottom: 40px; position: relative; }
-    .import-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #7aabff; border-radius: 4px 4px 0 0; }
-    .import-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .import-tab { background: none; border: 1px solid var(--border); color: var(--text-mid); font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; padding: 8px 18px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
-    .import-tab.active { background: rgba(122,171,255,0.1); border-color: #7aabff; color: #7aabff; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 550px) { .stats { grid-template-columns: 1fr; } }
+    .stat { border: 1px solid var(--border); padding: 1.25rem; background: #ffffff; }
+    .stat-label { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--ink-soft); margin-bottom: 0.4em; }
+    .stat-value { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 2rem; line-height: 1; }
+
+    /* ── sections ── */
+    .section { margin-bottom: 2rem; }
+    .section-head { border-bottom: 1px solid var(--rule); padding-bottom: 0.75rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
+    .section-title { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.25rem; }
+
+    .form-card { border: 1px solid var(--border); background: #ffffff; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr 120px; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--ink-soft); }
+    input, select, textarea { background: #ffffff; border: 1px solid var(--border); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; padding: 0.55rem 0.7rem; outline: none; width: 100%; }
+    input:focus, select:focus, textarea:focus { border-color: var(--ink); }
+    input::placeholder, textarea::placeholder { color: var(--ink-soft); }
+    textarea { resize: vertical; line-height: 1.6; min-height: 80px; }
+
+    button { background: var(--ink); color: #ffffff; border: none; padding: 0.6rem 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; letter-spacing: 0.1em; cursor: pointer; }
+    button:hover { background: #000; }
+    button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+    button.secondary:hover { background: #eaddc4; border-color: var(--ink); }
+
+    .message { font-size: 0.85rem; padding: 0.5rem 0.75rem; margin-top: 0.5rem; border: 1px solid var(--border); display: none; }
+    .message.show { display: block; }
+    .message.success { border-color: #2e7d32; background: #f0f6f0; color: #2e7d32; }
+    .message.error { border-color: #b3261e; background: #f9f0f0; color: #b3261e; }
+    .message.info { border-color: #5a4a2e; background: #f7f5f0; color: #5a4a2e; }
+
+    /* ── categories grid ── */
+    .cats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .cat-card { border: 1px solid var(--border); background: #ffffff; padding: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .cat-card-left { display: flex; align-items: center; gap: 0.75rem; }
+    .cat-card-emoji { font-size: 1.5rem; }
+    .cat-card-nom { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1rem; line-height: 1.3; }
+    .cat-card-ordre { font-size: 0.8rem; color: var(--ink-soft); }
+    .cat-actions { display: flex; gap: 0.5rem; }
+
+    /* ── table ── */
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { font-family: 'Source Serif 4', serif; font-weight: 600; border-bottom: 2px solid var(--ink); color: var(--ink); }
+    td code { font-size: 0.85rem; }
+    .badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; background: #f0f6f0; color: #2e7d32; padding: 0.15rem 0.4rem; border: 1px solid #cfe0cf; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .dot.on { background: #2e7d32; }
+    .dot.off { background: #b3261e; }
+
+    /* ── modal ── */
+    .overlay { position: fixed; inset: 0; background: rgba(20,20,24,0.25); display: none; align-items: center; justify-content: center; z-index: 100; }
+    .overlay.open { display: flex; }
+    .modal { background: #ffffff; border: 2px solid var(--ink); padding: 2rem; width: 100%; max-width: 520px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-head { border-bottom: 1px solid var(--rule); padding-bottom: 0.75rem; margin-bottom: 1rem; }
+    .modal-title { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.25rem; margin-bottom: 0.25rem; }
+    .modal fieldset { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+    .modal-actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+    .modal-actions button { flex: 1; }
+
+    /* ── import ── */
+    .import-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .import-tab { background: #ffffff; border: 1px solid var(--border); color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; padding: 0.4rem 0.8rem; cursor: pointer; }
+    .import-tab.active { background: var(--ink); color: #ffffff; border-color: var(--ink); }
+    .import-tab:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
     .import-pane { display: none; }
     .import-pane.active { display: block; }
-    .upload-zone { border: 2px dashed var(--border); border-radius: 4px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
-    .upload-zone:hover, .upload-zone.drag { border-color: #7aabff; background: rgba(100,150,255,0.04); }
+    .upload-zone { border: 2px dashed var(--border); border-radius: 0; padding: 2rem; text-align: center; cursor: pointer; }
     .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .upload-icon { font-size: 36px; margin-bottom: 12px; }
-    .upload-label { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-mid); }
-    .upload-label span { color: #7aabff; }
-    .upload-filename { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--vert); margin-top: 8px; }
-    .import-actions { display: flex; gap: 12px; margin-top: 16px; align-items: center; }
-    .btn-import { background: #7aabff; color: #000; border: none; padding: 12px 28px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
-    .btn-import:hover { background: #5590ff; color: white; }
-    .import-preview { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-mid); }
-    .progress-bar-wrap { background: var(--bg-3); border-radius: 2px; height: 4px; margin-top: 12px; overflow: hidden; display: none; }
-    .progress-bar { height: 100%; background: var(--vert); width: 0%; transition: width 0.3s; }
-    .table-wrapper { background: var(--bg-2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
-    table { width: 100%; border-collapse: collapse; }
-    th { background: var(--bg-3); padding: 12px 20px; text-align: left; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); font-weight: 400; }
-    td { padding: 16px 20px; border-top: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
-    tr:hover td { background: var(--bg-3); }
-    .td-emoji { font-size: 24px; }
-    .badge-pill { background: rgba(255,77,28,0.15); color: var(--accent); font-size: 9px; font-weight: 700; letter-spacing: 2px; padding: 3px 10px; border-radius: 100px; }
-    .actif-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-    .actif-dot.on { background: var(--vert); }
-    .actif-dot.off { background: var(--rouge); }
-    .td-actions { display: flex; gap: 8px; }
-    .btn-edit { background: none; border: 1px solid var(--border); color: var(--text-mid); font-size: 11px; padding: 5px 12px; cursor: pointer; transition: all 0.2s; border-radius: 2px; font-family: 'Syne', sans-serif; font-weight: 600; }
-    .btn-edit:hover { border-color: var(--accent); color: var(--accent); }
-    .btn-delete { background: none; border: 1px solid var(--border); color: var(--text-dim); font-size: 11px; padding: 5px 12px; cursor: pointer; transition: all 0.2s; border-radius: 2px; font-family: 'Syne', sans-serif; font-weight: 600; }
-    .btn-delete:hover { border-color: var(--rouge); color: var(--rouge); }
-    .empty-table { text-align: center; padding: 48px; color: var(--text-dim); font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 2px; }
-    /* CATS GRID */
-    .cats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .cat-card { background: var(--bg-3); border: 1px solid var(--border); padding: 16px 20px; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; transition: border-color 0.2s; }
-    .cat-card:hover { border-color: var(--purple); }
-    .cat-card-left { display: flex; align-items: center; gap: 12px; }
-    .cat-card-emoji { font-size: 22px; }
-    .cat-card-nom { font-weight: 700; font-size: 13px; }
-    .cat-card-ordre { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-dim); }
-    /* MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--bg-2); border: 1px solid var(--border); padding: 40px; width: 100%; max-width: 500px; position: relative; border-radius: 4px; max-height: 90vh; overflow-y: auto; }
-    .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); border-radius: 4px 4px 0 0; }
-    .modal.purple-modal::before { background: var(--purple); }
-    .modal-title { font-family: 'Instrument Serif', serif; font-size: 24px; font-style: italic; margin-bottom: 28px; }
-    .modal-btns { display: flex; gap: 12px; margin-top: 24px; }
-    .btn-cancel { flex: 1; background: none; border: 1px solid var(--border); color: var(--text-mid); padding: 12px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
-    .btn-cancel:hover { border-color: var(--text); color: var(--text); }
-    .btn-save { flex: 2; background: var(--accent); color: white; border: none; padding: 12px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; border-radius: 2px; }
-    .btn-save:hover { background: var(--accent-2); }
-    .btn-save.purple { background: var(--purple); color: #000; }
-    .btn-save.purple:hover { background: #c4b5fd; }
-    @media (max-width: 768px) { nav { padding: 0 20px; } main { padding: 24px 20px; } .stats { grid-template-columns: 1fr 1fr; } .form-grid, .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; } }
+    .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .progress { height: 4px; background: #eaddc4; margin-top: 1rem; overflow: hidden; display: none; }
+    .progress-bar { height: 100%; background: var(--ink); width: 0%; }
+
+    /* ── rules ── */
+    .hairline { border: none; border-top: 1px solid var(--rule); margin: 2rem 0; }
+
+    /* ── motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+    .load-reveal { opacity: 0; animation: fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    @media (max-width: 600px) { .wrap { padding: 0 1rem; } header { padding: 1rem 0 0.5rem; } .stats { gap: 0.75rem; } .form-card { padding: 1rem; } }
   </style>
 </head>
 <body>
 
-  <div id="loginPanel" class="login-wrapper">
-    <div class="login-card">
-      <div class="login-logo">Nath<span>Store</span></div>
-      <div class="login-sub">// Panneau d'administration</div>
-      <div class="field"><label>Email admin</label><input type="email" id="adminEmail" placeholder="admin@nathstore.com"></div>
-      <div class="field"><label>Mot de passe</label><input type="password" id="adminPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') loginAdmin()"></div>
-      <button class="btn" onclick="loginAdmin()">Accéder au panel →</button>
-      <div class="msg" id="loginMsg"></div>
+  <header>
+    <div class="wrap">
+      <a href="#" class="brand">NathStore</a>
+      <nav>
+        <a href="../index.html">nathproject</a>
+        <a href="index.html">← voir le shop</a>
+        <a href="admin-help.html">guide json</a>
+        <button class="secondary" onclick="logout()">déconnexion</button>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <div id="adminPanel">
-    <nav>
-      <div>
-        <span class="nav-logo">Nath<span>Store</span></span>
-        <span class="nav-badge">ADMIN</span>
-      </div>
-      <div class="nav-right">
-        <a href="admin-help.html" class="btn-sm accent">📖 Guide JSON</a>
-        <a href="index.html" class="btn-sm">← Voir le shop</a>
-        <button class="btn-sm danger" onclick="logout()">Déconnexion</button>
-      </div>
-    </nav>
-
-    <main>
-
-      <!-- STATS -->
-      <div class="stats">
-        <div class="stat"><div class="stat-label">Total produits</div><div class="stat-value" id="statTotal">—</div></div>
-        <div class="stat"><div class="stat-label">Produits actifs</div><div class="stat-value" id="statActifs">—</div></div>
-        <div class="stat"><div class="stat-label">Prix moyen</div><div class="stat-value" id="statPrix">—</div></div>
-        <div class="stat"><div class="stat-label">Catégories</div><div class="stat-value purple" id="statCats">—</div></div>
+  <main class="wrap load-reveal">
+    <section class="column">
+      <!-- login -->
+      <div id="loginPanel" class="login">
+        <h2>panel d'administration</h2>
+        <form onsubmit="loginAdmin(event)">
+          <fieldset>
+            <div class="field">
+              <label>email admin</label>
+              <input type="email" id="adminEmail" placeholder="admin@nathstore.com" required>
+            </div>
+            <div class="field">
+              <label>mot de passe</label>
+              <input type="password" id="adminPassword" placeholder="••••••••" required>
+            </div>
+          </fieldset>
+          <button type="submit">accéder au panel</button>
+          <div class="message" id="loginMsg"></div>
+        </form>
       </div>
 
-      <!-- CATEGORIES -->
-      <div class="section-title"><span>Gérer les catégories</span></div>
-      <div class="add-form purple-top">
-        <div class="form-grid-3">
-          <div class="field"><label>Nom (minuscules, sans espaces)</label><input type="text" id="newCatNom" placeholder="high-tech"></div>
-          <div class="field"><label>Emoji</label><input type="text" id="newCatEmoji" placeholder="🖥️"></div>
-          <div class="field"><label>Ordre</label><input type="number" id="newCatOrdre" placeholder="5" min="0"></div>
+      <!-- panel -->
+      <div id="adminPanel">
+        <!-- stats -->
+        <div class="stats">
+          <div class="stat"><div class="stat-label">total produits</div><div class="stat-value" id="statTotal">—</div></div>
+          <div class="stat"><div class="stat-label">produits actifs</div><div class="stat-value" id="statActifs">—</div></div>
+          <div class="stat"><div class="stat-label">prix moyen</div><div class="stat-value" id="statPrix">—</div></div>
+          <div class="stat"><div class="stat-label">catégories</div><div class="stat-value" id="statCats">—</div></div>
         </div>
-        <button class="btn-add purple" onclick="ajouterCategorie()">+ Ajouter la catégorie</button>
-        <div class="msg" id="catMsg"></div>
-      </div>
-      <div class="cats-grid" id="catsGrid">
-        <div style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;padding:20px">Chargement...</div>
-      </div>
 
-      <!-- IMPORT JSON -->
-      <div class="section-title" style="margin-top:20px">
-        <span>Import JSON en masse</span>
-        <a href="admin-help.html" class="btn-sm accent" style="font-size:10px">📖 Guide complet →</a>
-      </div>
-      <div class="import-section">
-        <div class="import-tabs">
-          <button class="import-tab active" onclick="switchTab('paste', this)">📋 Coller du JSON</button>
-          <button class="import-tab" onclick="switchTab('file', this)">📁 Uploader un fichier</button>
-        </div>
-        <div class="import-pane active" id="paneColler">
-          <div class="field">
-            <label>JSON — tableau de produits</label>
-            <textarea id="jsonInput" rows="8" placeholder='[{"nom":"Air Max","emoji":"👟","categorie":"mode","prix":89.99}]'></textarea>
+        <!-- catégories -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">gérer les catégories</div>
           </div>
-          <div class="import-actions">
-            <button class="btn-import" onclick="importerJSON()">⬆ Importer</button>
-            <span class="import-preview" id="previewPaste"></span>
+          <div class="form-card">
+            <div class="form-grid">
+              <div class="field">
+                <label>nom (minuscules, sans espaces)</label>
+                <input type="text" id="newCatNom" placeholder="high-tech">
+              </div>
+              <div class="field">
+                <label>emoji</label>
+                <input type="text" id="newCatEmoji" placeholder="🖥️">
+              </div>
+              <div class="field">
+                <label>ordre</label>
+                <input type="number" id="newCatOrdre" placeholder="5" min="0">
+              </div>
+            </div>
+            <button type="button" onclick="ajouterCategorie()">+ ajouter la catégorie</button>
+            <div class="message" id="catMsg"></div>
           </div>
-          <div class="progress-bar-wrap" id="progressWrap1"><div class="progress-bar" id="progressBar1"></div></div>
-          <div class="msg" id="importMsg1"></div>
+          <div class="cats-grid" id="catsGrid">
+            <div style="color:var(--ink-soft);font-size:0.9rem;padding:1rem">chargement…</div>
+          </div>
         </div>
-        <div class="import-pane" id="paneFile">
-          <div class="upload-zone" id="uploadZone">
-            <input type="file" accept=".json" id="fileInput" onchange="handleFile(this)">
-            <div class="upload-icon">📁</div>
-            <div class="upload-label">Glisse ton fichier ici ou <span>clique pour choisir</span></div>
-            <div class="upload-filename" id="uploadFilename"></div>
+
+        <!-- import json -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">import json en masse</div>
+            <a href="admin-help.html" class="secondary" style="font-size:0.8rem">guide complet</a>
           </div>
-          <div class="import-actions">
-            <button class="btn-import" onclick="importerFichier()">⬆ Importer le fichier</button>
-            <span class="import-preview" id="previewFile"></span>
+          <div class="form-card">
+            <div class="import-tabs">
+              <button class="import-tab active" type="button" onclick="switchTab('coller', this)">coller du json</button>
+              <button class="import-tab" type="button" onclick="switchTab('fichier', this)">uploader un fichier</button>
+            </div>
+            <div class="import-pane active" id="paneColler">
+              <div class="field">
+                <label>json — tableau de produits</label>
+                <textarea id="jsonInput" rows="6" placeholder='[{"nom":"Air Max 2026","emoji":"👟","categorie":"mode","prix":89.99}]'></textarea>
+              </div>
+              <div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem;">
+                <button type="button" onclick="importerJSON()">importer</button>
+                <span class="message" id="previewPaste" style="padding:0.5rem 0.75rem;border:none;background:none;"></span>
+              </div>
+              <div class="progress" id="progressWrap1"><div class="progress-bar" id="progressBar1"></div></div>
+              <div class="message" id="importMsg1"></div>
+            </div>
+            <div class="import-pane" id="paneFichier">
+              <div class="upload-zone">
+                <input type="file" accept=".json" id="fileInput" onchange="handleFile(this)">
+                <div class="upload-icon">📁</div>
+                <div style="font-size:0.85rem;color:var(--ink-soft);">glissez votre fichier ici ou cliquez pour choisir</div>
+                <div class="message" id="uploadFilename" style="padding:0.5rem 0.75rem;margin-top:0.5rem;border:none;background:none;"></div>
+              </div>
+              <div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem;">
+                <button type="button" onclick="importerFichier()">importer le fichier</button>
+                <span class="message" id="previewFile" style="padding:0.5rem 0.75rem;border:none;background:none;"></span>
+              </div>
+              <div class="progress" id="progressWrap2"><div class="progress-bar" id="progressBar2"></div></div>
+              <div class="message" id="importMsg2"></div>
+            </div>
           </div>
-          <div class="progress-bar-wrap" id="progressWrap2"><div class="progress-bar" id="progressBar2"></div></div>
-          <div class="msg" id="importMsg2"></div>
+        </div>
+
+        <!-- ajouter produit -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">ajouter un produit</div></div>
+          <div class="form-card">
+            <div class="form-grid">
+              <div class="field"><label>nom</label><input type="text" id="newNom" placeholder="air max 2026"></div>
+              <div class="field"><label>emoji</label><input type="text" id="newEmoji" placeholder="👟"></div>
+              <div class="field"><label>catégorie</label><select id="newCat"></select></div>
+            </div>
+            <div class="form-grid" style="grid-template-columns:1fr 1fr 160px;">
+              <div class="field"><label>prix (€)</label><input type="number" id="newPrix" placeholder="29.99" step="0.01" min="0"></div>
+              <div class="field"><label>badge (optionnel)</label><input type="text" id="newBadge" placeholder="new, promo..."></div>
+              <div class="field" style="display:flex;align-items:end;"><button type="button" onclick="ajouterProduit()">+ ajouter le produit</button></div>
+            </div>
+            <div class="field" style="margin-top:0.5rem"><label>description</label><input type="text" id="newDesc" placeholder="description courte"></div>
+            <div class="message" id="addMsg"></div>
+          </div>
+        </div>
+
+        <!-- produits table -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">gérer les produits</div></div>
+          <table>
+            <thead>
+              <tr><th style="width:60px;">emoji</th><th>nom</th><th style="width:120px;">catégorie</th><th style="width:100px;">prix</th><th style="width:110px;">badge</th><th style="width:100px;">statut</th><th style="width:140px;">actions</th></tr>
+            </thead>
+            <tbody id="produitsTable"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--ink-soft)">chargement…</td></tr></tbody>
+          </table>
         </div>
       </div>
+    </section>
+  </main>
 
-      <!-- AJOUT PRODUIT -->
-      <div class="section-title"><span>Ajouter un produit</span></div>
-      <div class="add-form">
-        <div class="form-grid">
-          <div class="field"><label>Nom</label><input type="text" id="newNom" placeholder="Air Max 2026"></div>
-          <div class="field"><label>Emoji</label><input type="text" id="newEmoji" placeholder="👟"></div>
-          <div class="field"><label>Catégorie</label><select id="newCat"></select></div>
-        </div>
-        <div class="form-grid-2">
-          <div class="field"><label>Prix (€)</label><input type="number" id="newPrix" placeholder="29.99" step="0.01" min="0"></div>
-          <div class="field"><label>Badge (optionnel)</label><input type="text" id="newBadge" placeholder="NEW, PROMO..."></div>
-        </div>
-        <div class="field" style="margin-bottom:20px"><label>Description</label><input type="text" id="newDesc" placeholder="Description courte..."></div>
-        <button class="btn-add" onclick="ajouterProduit()">+ Ajouter le produit</button>
-        <div class="msg" id="addMsg"></div>
-      </div>
-
-      <!-- TABLE PRODUITS -->
-      <div class="section-title"><span>Gérer les produits</span></div>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>Emoji</th><th>Nom</th><th>Catégorie</th><th>Prix</th><th>Badge</th><th>Statut</th><th>Actions</th></tr></thead>
-          <tbody id="produitsTable"><tr><td colspan="7" class="empty-table">Chargement...</td></tr></tbody>
-        </table>
-      </div>
-
-    </main>
-  </div>
-
-  <!-- MODAL EDIT PRODUIT -->
-  <div class="modal-overlay" id="editModal">
-    <div class="modal">
-      <div class="modal-title">Modifier le produit</div>
+  <!-- modal edit produit -->
+  <div class="overlay" id="editModal" onclick="if(event.target===this) closeEdit()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-head"><div class="modal-title">modifier le produit</div></div>
       <input type="hidden" id="editId">
-      <div class="form-grid" style="margin-bottom:16px">
-        <div class="field"><label>Nom</label><input type="text" id="editNom"></div>
-        <div class="field"><label>Emoji</label><input type="text" id="editEmoji"></div>
-        <div class="field"><label>Catégorie</label><select id="editCat"></select></div>
-      </div>
-      <div class="form-grid-2" style="margin-bottom:16px">
-        <div class="field"><label>Prix (€)</label><input type="number" id="editPrix" step="0.01" min="0"></div>
-        <div class="field"><label>Badge</label><input type="text" id="editBadge"></div>
-      </div>
-      <div class="field" style="margin-bottom:16px"><label>Description</label><input type="text" id="editDesc"></div>
-      <div class="field"><label>Statut</label><select id="editActif"><option value="1">✅ Actif</option><option value="0">❌ Inactif</option></select></div>
-      <div class="modal-btns">
-        <button class="btn-cancel" onclick="closeEdit()">Annuler</button>
-        <button class="btn-save" onclick="sauvegarderProduit()">Sauvegarder →</button>
+      <fieldset>
+        <div class="field"><label>nom</label><input type="text" id="editNom"></div>
+        <div class="field"><label>emoji</label><input type="text" id="editEmoji"></div>
+        <div class="field"><label>catégorie</label><select id="editCat"></select></div>
+        <div class="field"><label>prix (€)</label><input type="number" id="editPrix" step="0.01" min="0"></div>
+        <div class="field"><label>badge</label><input type="text" id="editBadge"></div>
+        <div class="field"><label>description</label><input type="text" id="editDesc"></div>
+        <div class="field"><label>statut</label><select id="editActif"><option value="1">actif</option><option value="0">inactif</option></select></div>
+      </fieldset>
+      <div class="modal-actions">
+        <button type="button" class="secondary" onclick="closeEdit()">annuler</button>
+        <button type="button" onclick="sauvegarderProduit()">sauvegarder</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL EDIT CATEGORIE -->
-  <div class="modal-overlay" id="editCatModal">
-    <div class="modal purple-modal">
-      <div class="modal-title">Modifier la catégorie</div>
+  <!-- modal edit categorie -->
+  <div class="overlay" id="editCatModal" onclick="if(event.target===this) closeEditCat()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-head"><div class="modal-title">modifier la catégorie</div></div>
       <input type="hidden" id="editCatId">
-      <div class="form-grid-3" style="margin-bottom:16px">
-        <div class="field"><label>Nom</label><input type="text" id="editCatNom"></div>
-        <div class="field"><label>Emoji</label><input type="text" id="editCatEmoji"></div>
-        <div class="field"><label>Ordre</label><input type="number" id="editCatOrdre" min="0"></div>
+      <fieldset>
+        <div class="field"><label>nom</label><input type="text" id="editCatNom"></div>
+        <div class="field"><label>emoji</label><input type="text" id="editCatEmoji"></div>
+        <div class="field"><label>ordre</label><input type="number" id="editCatOrdre" min="0"></div>
+      </fieldset>
+      <div class="modal-actions">
+        <button type="button" class="secondary" onclick="closeEditCat()">annuler</button>
+        <button type="button" onclick="sauvegarderCategorie()">sauvegarder</button>
       </div>
-      <div class="modal-btns">
-        <button class="btn-cancel" onclick="closeEditCat()">Annuler</button>
-        <button class="btn-save purple" onclick="sauvegarderCategorie()">Sauvegarder →</button>
-      </div>
-      <div class="msg" id="editCatMsg"></div>
+      <div class="message" id="editCatMsg"></div>
     </div>
   </div>
 
@@ -287,15 +354,16 @@
 
     if (adminToken) showPanel();
 
-    async function loginAdmin() {
+    async function loginAdmin(e) {
+      e.preventDefault();
       const email = document.getElementById('adminEmail').value;
       const mot_de_passe = document.getElementById('adminPassword').value;
       try {
         const res = await fetch(`${API}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, mot_de_passe }) });
         const data = await res.json();
         if (data.token) { localStorage.setItem('adminToken', data.token); adminToken = data.token; showPanel(); }
-        else showMsg('loginMsg', data.erreur || 'Erreur', 'error');
-      } catch { showMsg('loginMsg', 'Serveur inaccessible', 'error'); }
+        else { showMsg('loginMsg', data.erreur || 'erreur', 'error'); }
+      } catch { showMsg('loginMsg', 'serveur inaccessible', 'error'); }
     }
 
     function showPanel() {
@@ -307,7 +375,7 @@
 
     function logout() { localStorage.removeItem('adminToken'); location.reload(); }
 
-    // ─── CATEGORIES ───
+    // catégories
     async function loadCategories() {
       try {
         const res = await fetch(CAT_API);
@@ -315,12 +383,12 @@
         renderCatsGrid();
         populateCatSelects();
         document.getElementById('statCats').textContent = categories.length;
-      } catch { document.getElementById('catsGrid').innerHTML = '<p style="color:var(--rouge);font-size:12px">Erreur chargement</p>'; }
+      } catch { document.getElementById('catsGrid').innerHTML = '<p style="color:#b3261e;font-size:0.9rem">erreur de chargement</p>'; }
     }
 
     function renderCatsGrid() {
       const grid = document.getElementById('catsGrid');
-      if (!categories.length) { grid.innerHTML = '<p style="color:var(--text-dim);font-family:\'DM Mono\',monospace;font-size:12px">Aucune catégorie</p>'; return; }
+      if (!categories.length) { grid.innerHTML = '<p style="color:var(--ink-soft);font-size:0.9rem">aucune catégorie</p>'; return; }
       grid.innerHTML = categories.map(c => `
         <div class="cat-card">
           <div class="cat-card-left">
@@ -330,9 +398,9 @@
               <div class="cat-card-ordre">ordre : ${c.ordre}</div>
             </div>
           </div>
-          <div class="td-actions">
-            <button class="btn-edit" onclick="openEditCat(${JSON.stringify(c).replace(/"/g, '&quot;')})">✏</button>
-            <button class="btn-delete" onclick="supprimerCategorie(${c.id}, '${c.nom}')">✕</button>
+          <div class="cat-actions">
+            <button class="secondary" onclick="openEditCat(${JSON.stringify(c).replace(/"/g, '&quot;')})">modifier</button>
+            <button class="secondary" onclick="supprimerCategorie(${c.id}, '${c.nom}')">supprimer</button>
           </div>
         </div>`).join('');
     }
@@ -347,16 +415,13 @@
       const nom = document.getElementById('newCatNom').value.trim().toLowerCase();
       const emoji = document.getElementById('newCatEmoji').value.trim();
       const ordre = parseInt(document.getElementById('newCatOrdre').value) || 0;
-      if (!nom || !emoji) { showMsg('catMsg', 'Nom et emoji requis', 'error'); return; }
+      if (!nom || !emoji) { showMsg('catMsg', 'nom et emoji requis', 'error'); return; }
       try {
         const res = await fetch(CAT_API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` }, body: JSON.stringify({ nom, emoji, ordre }) });
         const data = await res.json();
-        if (res.ok) {
-          showMsg('catMsg', '✅ Catégorie ajoutée !', 'success');
-          ['newCatNom','newCatEmoji','newCatOrdre'].forEach(id => document.getElementById(id).value = '');
-          loadCategories();
-        } else showMsg('catMsg', data.erreur || 'Erreur', 'error');
-      } catch { showMsg('catMsg', 'Erreur serveur', 'error'); }
+        if (res.ok) { showMsg('catMsg', 'catégorie ajoutée', 'success'); ['newCatNom','newCatEmoji','newCatOrdre'].forEach(id => document.getElementById(id).value = ''); loadCategories(); }
+        else showMsg('catMsg', data.erreur || 'erreur', 'error');
+      } catch { showMsg('catMsg', 'erreur serveur', 'error'); }
     }
 
     function openEditCat(c) {
@@ -366,7 +431,6 @@
       document.getElementById('editCatOrdre').value = c.ordre;
       document.getElementById('editCatModal').classList.add('open');
     }
-
     function closeEditCat() { document.getElementById('editCatModal').classList.remove('open'); }
 
     async function sauvegarderCategorie() {
@@ -376,28 +440,26 @@
       const ordre = parseInt(document.getElementById('editCatOrdre').value) || 0;
       try {
         const res = await fetch(`${CAT_API}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` }, body: JSON.stringify({ nom, emoji, ordre }) });
-        const data = await res.json();
         if (res.ok) { closeEditCat(); loadCategories(); }
-        else showMsg('editCatMsg', data.erreur || 'Erreur', 'error');
-      } catch { showMsg('editCatMsg', 'Erreur serveur', 'error'); }
+        else showMsg('editCatMsg', 'erreur', 'error');
+      } catch { showMsg('editCatMsg', 'erreur serveur', 'error'); }
     }
 
     async function supprimerCategorie(id, nom) {
-      if (!confirm(`Supprimer la catégorie "${nom}" ?\n\nImpossible si des produits l'utilisent.`)) return;
+      if (!confirm(`supprimer la catégorie "${nom}" ?\n\nimpossible si des produits l'utilisent.`)) return;
       try {
         const res = await fetch(`${CAT_API}/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminToken}` } });
-        const data = await res.json();
         if (res.ok) loadCategories();
-        else alert(data.erreur);
+        else alert('erreur');
       } catch {}
     }
 
-    // ─── IMPORT TABS ───
+    // import tabs
     function switchTab(tab, btn) {
       document.querySelectorAll('.import-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.import-pane').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById(tab === 'paste' ? 'paneColler' : 'paneFile').classList.add('active');
+      document.getElementById(tab === 'coller' ? 'paneColler' : 'paneFichier').classList.add('active');
     }
 
     function handleFile(input) {
@@ -405,31 +467,22 @@
       fichierJSON = file;
       document.getElementById('uploadFilename').textContent = `✓ ${file.name}`;
       const reader = new FileReader();
-      reader.onload = (e) => { try { const d = JSON.parse(e.target.result); document.getElementById('previewFile').textContent = `${Array.isArray(d) ? d.length : 1} produit(s)`; } catch { document.getElementById('previewFile').textContent = '⚠ JSON invalide'; } };
+      reader.onload = (e) => { try { const d = JSON.parse(e.target.result); document.getElementById('previewFile').textContent = `${Array.isArray(d) ? d.length : 1} produit(s)`; } catch { document.getElementById('previewFile').textContent = '⚠ json invalide'; } };
       reader.readAsText(file);
     }
 
-    const zone = document.getElementById('uploadZone');
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault(); zone.classList.remove('drag');
-      const file = e.dataTransfer.files[0];
-      if (file && file.name.endsWith('.json')) { fichierJSON = file; document.getElementById('uploadFilename').textContent = `✓ ${file.name}`; const reader = new FileReader(); reader.onload = (ev) => { try { const d = JSON.parse(ev.target.result); document.getElementById('previewFile').textContent = `${Array.isArray(d) ? d.length : 1} produit(s)`; } catch { document.getElementById('previewFile').textContent = '⚠ JSON invalide'; } }; reader.readAsText(file); }
-    });
-
     async function importerJSON() {
       const raw = document.getElementById('jsonInput').value.trim();
-      if (!raw) { showMsg('importMsg1', 'Colle du JSON d\'abord', 'error'); return; }
-      let produits; try { produits = JSON.parse(raw); } catch { showMsg('importMsg1', '❌ JSON invalide', 'error'); return; }
+      if (!raw) { showMsg('importMsg1', 'collez du json d\'abord', 'error'); return; }
+      let produits; try { produits = JSON.parse(raw); } catch { showMsg('importMsg1', 'json invalide', 'error'); return; }
       if (!Array.isArray(produits)) produits = [produits];
       await importerProduits(produits, 'importMsg1', 'progressWrap1', 'progressBar1');
     }
 
     async function importerFichier() {
-      if (!fichierJSON) { showMsg('importMsg2', 'Choisis un fichier JSON d\'abord', 'error'); return; }
+      if (!fichierJSON) { showMsg('importMsg2', 'choisissez un fichier json d\'abord', 'error'); return; }
       const reader = new FileReader();
-      reader.onload = async (e) => { let produits; try { produits = JSON.parse(e.target.result); } catch { showMsg('importMsg2', '❌ JSON invalide', 'error'); return; } if (!Array.isArray(produits)) produits = [produits]; await importerProduits(produits, 'importMsg2', 'progressWrap2', 'progressBar2'); };
+      reader.onload = async (e) => { let produits; try { produits = JSON.parse(e.target.result); } catch { showMsg('importMsg2', 'json invalide', 'error'); return; } if (!Array.isArray(produits)) produits = [produits]; await importerProduits(produits, 'importMsg2', 'progressWrap2', 'progressBar2'); };
       reader.readAsText(fichierJSON);
     }
 
@@ -443,38 +496,38 @@
         try { const res = await fetch(`${API}/produits`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` }, body: JSON.stringify({ nom: p.nom, emoji: p.emoji, categorie: p.categorie, prix: parseFloat(p.prix), description: p.description || '', badge: p.badge || null }) }); if (res.ok) ok++; else err++; } catch { err++; }
         bar.style.width = `${Math.round(((i+1)/produits.length)*100)}%`;
       }
-      showMsg(msgId, `✅ ${ok} importé(s)${err > 0 ? ` — ⚠ ${err} ignoré(s)` : ''}`, err === 0 ? 'success' : ok > 0 ? 'info' : 'error');
+      showMsg(msgId, `✓ ${ok} importé(s)${err > 0 ? ` — ⚠ ${err} ignoré(s)` : ''}`, err === 0 ? 'success' : ok > 0 ? 'info' : 'error');
       loadProduits();
       setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 3000);
     }
 
-    // ─── PRODUITS ───
+    // produits
     async function loadProduits() {
       try { const res = await fetch(`${API}/produits`); const produits = await res.json(); renderTable(produits); updateStats(produits); }
-      catch { document.getElementById('produitsTable').innerHTML = '<tr><td colspan="7" class="empty-table">Erreur</td></tr>'; }
+      catch { document.getElementById('produitsTable').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#b3261e">erreur</td></tr>'; }
     }
 
     function updateStats(produits) {
       document.getElementById('statTotal').textContent = produits.length;
       document.getElementById('statActifs').textContent = produits.filter(p => p.actif).length;
       const moy = produits.length ? (produits.reduce((s,p) => s+p.prix, 0)/produits.length).toFixed(2) : '0';
-      document.getElementById('statPrix').textContent = moy + '€';
+      document.getElementById('statPrix').textContent = moy + ' €';
     }
 
     function renderTable(produits) {
       const tbody = document.getElementById('produitsTable');
-      if (!produits.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-table">Aucun produit</td></tr>'; return; }
+      if (!produits.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--ink-soft)">aucun produit</td></tr>'; return; }
       tbody.innerHTML = produits.map(p => `
         <tr>
-          <td class="td-emoji">${p.emoji}</td>
+          <td>${p.emoji}</td>
           <td><strong>${p.nom}</strong></td>
           <td>${(() => { const c = categories.find(c => c.nom === p.categorie); return c ? `${c.emoji} ${c.nom}` : p.categorie; })()}</td>
-          <td style="font-family:'DM Mono',monospace">${p.prix.toFixed(2)}€</td>
-          <td>${p.badge ? `<span class="badge-pill">${p.badge}</span>` : '<span style="color:var(--text-dim)">—</span>'}</td>
-          <td><span class="actif-dot ${p.actif ? 'on' : 'off'}"></span> ${p.actif ? 'Actif' : 'Inactif'}</td>
-          <td><div class="td-actions">
-            <button class="btn-edit" onclick="openEdit(${JSON.stringify(p).replace(/"/g, '&quot;')})">Modifier</button>
-            <button class="btn-delete" onclick="supprimerProduit(${p.id}, '${p.nom}')">Supprimer</button>
+          <td style="font-family:'IBM Plex Mono',monospace">${p.prix.toFixed(2)} €</td>
+          <td>${p.badge ? `<span class="badge">${p.badge}</span>` : '<span style="color:var(--ink-soft)">—</span>'}</td>
+          <td><span class="dot ${p.actif ? 'on' : 'off'}"></span> ${p.actif ? 'actif' : 'inactif'}</td>
+          <td><div style="display:flex;gap:0.5rem;">
+            <button class="secondary" onclick="openEdit(${JSON.stringify(p).replace(/"/g, '&quot;')})">modifier</button>
+            <button class="secondary" onclick="supprimerProduit(${p.id}, '${p.nom}')">supprimer</button>
           </div></td>
         </tr>`).join('');
     }
@@ -486,13 +539,12 @@
       const prix = parseFloat(document.getElementById('newPrix').value);
       const description = document.getElementById('newDesc').value;
       const badge = document.getElementById('newBadge').value;
-      if (!nom || !emoji || !prix) { showMsg('addMsg', 'Nom, emoji et prix requis', 'error'); return; }
+      if (!nom || !emoji || !prix) { showMsg('addMsg', 'nom, emoji et prix requis', 'error'); return; }
       try {
         const res = await fetch(`${API}/produits`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` }, body: JSON.stringify({ nom, emoji, categorie, prix, description, badge: badge || null }) });
-        const data = await res.json();
-        if (res.ok) { showMsg('addMsg', '✅ Produit ajouté !', 'success'); ['newNom','newEmoji','newPrix','newDesc','newBadge'].forEach(id => document.getElementById(id).value = ''); loadProduits(); }
-        else showMsg('addMsg', data.erreur || 'Erreur', 'error');
-      } catch { showMsg('addMsg', 'Erreur serveur', 'error'); }
+        if (res.ok) { showMsg('addMsg', 'produit ajouté', 'success'); ['newNom','newEmoji','newPrix','newDesc','newBadge'].forEach(id => document.getElementById(id).value = ''); loadProduits(); }
+        else showMsg('addMsg', 'erreur', 'error');
+      } catch { showMsg('addMsg', 'erreur serveur', 'error'); }
     }
 
     function openEdit(p) {
@@ -506,7 +558,6 @@
       document.getElementById('editActif').value = p.actif;
       document.getElementById('editModal').classList.add('open');
     }
-
     function closeEdit() { document.getElementById('editModal').classList.remove('open'); }
 
     async function sauvegarderProduit() {
@@ -516,14 +567,14 @@
     }
 
     async function supprimerProduit(id, nom) {
-      if (!confirm(`Supprimer "${nom}" ?`)) return;
+      if (!confirm(`supprimer "${nom}" ?`)) return;
       try { await fetch(`${API}/produits/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminToken}` } }); loadProduits(); } catch {}
     }
 
     function showMsg(id, text, type) {
       const el = document.getElementById(id);
-      el.textContent = text; el.className = `msg ${type}`;
-      setTimeout(() => el.className = 'msg', 4000);
+      el.textContent = text; el.className = `message ${type} show`;
+      setTimeout(() => el.className = 'message', 4000);
     }
   </script>
 </body>
