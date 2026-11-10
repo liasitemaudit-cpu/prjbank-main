@@ -4,14 +4,14 @@ NathBank, NathStore, NathNotes et NathChat forment un écosystème full-stack d�
 
 - NathBank — banque en ligne, frontend et backend
 - NathStore — boutique e-commerce qui paye via NathBank
-- NathNotes — application de notes style Apple Notes
+- NathNotes — application de notes
 - NathChat — messagerie temps réel par WebSocket
 
 ---
 
 ## sujet
 
-Ce projet a été conçu par Nathanaël dans le cadre d'un Bac Pro CIEL, option SNT. Le sujet est un écosystème bancaire et commercial complet. L'audience est l'auteur, ses enseignants et les utilisateurs des outils. Le rôle principal de ce document est de décrire l'écosystème clairement, sans décor inutile.
+Ce projet a été conçu dans le cadre d'un Bac Pro CIEL, option SNT. Le sujet est un écosystème bancaire et commercial complet. Ce document a pour rôle de décrire l'écosystème clairement, sans décor inutile et sans données sensibles.
 
 ---
 
@@ -38,11 +38,11 @@ Ce projet a été conçu par Nathanaël dans le cadre d'un Bac Pro CIEL, option 
 projet-banque/
 ├── CCM.md             cette documentation
 ├── index.html         portail SNT / page d'accueil NathProject
-├── ADMIN.md           identifiants et clés secrètes
+├── ADMIN.md           identifiants et clés secrètes (à ne pas diffuser)
 ├── arbo.txt           arborescence du projet
 ├── ReadMe.md          note de rappel
 ├── skills.md          fiche compétence design frontend
-├── .env               variables d'environnement
+├── .env               variables d'environnement (à ne pas diffuser)
 ├── .gitignore         fichiers ignorés par Git
 ├── LICENSE.txt        termes de la licence MIT
 ├── start-all.bat      lancement Windows de tous les serveurs
@@ -167,11 +167,9 @@ trois fonctions utilitaires : run (écriture sans retour), get (une ligne), all 
 
 ### middleware/auth.js
 
-un middleware s'exécute entre la requête et la réponse. auth.js vérifie que l'utilisateur est connecté avant d'accéder aux routes protégées. le client envoie un header Authorization: Bearer <token>. le middleware extrait le token, le vérifie avec la clé secrète JWT, puis met l'utilisateur dans req.user ou retourne une erreur 401.
+un middleware s'exécute entre la requête et la réponse. auth.js vérifie que l'utilisateur est connecté avant d'accéder aux routes protégées. le client envoie un header Authorization: Bearer <token>. le middleware extrait le token, le vérifie avec la clé secrète JWT configurée, puis met l'utilisateur dans req.user ou retourne une erreur 401.
 
-deux secrets JWT distincts :
-- users : mon_secret_jwt_super_secure_123
-- admins : admin_secret_nathstore_456
+deux clés secrètes JWT distinctes sont utilisées : une pour les utilisateurs, une pour les administrateurs. ces clés sont définies dans le code et ne doivent pas être diffusées.
 
 ---
 
@@ -181,11 +179,11 @@ deux secrets JWT distincts :
 
 POST /api/auth/register — créer un compte.
 corps : { nom, email, mot_de_passe }
-le mot de passe est hashé avec bcrypt (coût 10). un compte bancaire est créé automatiquement avec 100 € de solde de départ.
+le mot de passe est hashé avec bcrypt (coût 10). un compte bancaire est créé automatiquement avec un solde de départ à l'ouverture du compte.
 
 POST /api/auth/login — se connecter.
 corps : { email, mot_de_passe }
-retourne un token JWT valable 24h, le nom de l'utilisateur et un message de confirmation.
+retourne un token JWT à durée limitée et le nom de l'utilisateur.
 
 ### comptes (/api/comptes) — protégé JWT
 
@@ -193,7 +191,7 @@ GET /api/comptes/solde — retourne le solde du compte connecté.
 
 POST /api/comptes/deposer — déposer de l'argent.
 corps : { montant }
-règle : maximum 10 000 € de solde. tout dépôt dépassant cette limite est refusé.
+règle : un plafond de solde s'applique. tout dépôt dépassant cette limite est refusé.
 
 ### transactions (/api/transactions) — protégé JWT
 
@@ -206,7 +204,6 @@ GET /api/transactions/historique — historique des transactions du compte conne
 ### admin (/api/admin) — protégé JWT admin sauf indication contraire
 
 POST /api/admin/setup — créer le premier compte admin, protégé par une clé secrète.
-corps : { email, mot_de_passe, secret }
 
 POST /api/admin/login — connexion admin, retourne un token JWT.
 
@@ -250,7 +247,7 @@ crée la commande, insère chaque item dans commandes_items, vide automatiquemen
 
 ### routes GitHub (port 3000)
 
-GET /api/github-stats — statistiques du dépôt GitHub (langages, nombre total de commits). utilise le token GITHUB_TOKEN du fichier .env.
+GET /api/github-stats — statistiques du dépôt GitHub (langages, nombre total de commits). utilise un token configuré dans les variables d'environnement.
 
 GET /api/github-commits — les dix derniers commits du dépôt.
 
@@ -268,7 +265,7 @@ tableau de bord de l'utilisateur connecté. affiche le solde, le total dépensé
 
 ### banque-frontend/paiement.html
 
-page animée de confirmation de paiement. reçoit les informations via les paramètres d'URL.
+page de confirmation de paiement. transfert sécurisé depuis le compte nathbank.
 
 ---
 
@@ -278,31 +275,30 @@ page animée de confirmation de paiement. reçoit les informations via les param
 
 page principale de la boutique. au chargement, récupère les catégories, génère les boutons de filtre, charge les produits. si l'utilisateur est connecté, son panier est chargé depuis la base de données.
 
-le filtrage par catégorie fonctionne via des boutons de navigation synchronisés. la connexion est obligatoire pour acheter : un clic sur "+" sans être connecté ouvre la modal de connexion.
+le filtrage par catégorie fonctionne via des boutons de navigation synchronisés. la connexion est obligatoire pour ajouter au panier et acheter.
 
 le panier s'ouvre depuis la droite, permet de modifier les quantités, sauvegarde automatiquement en base de données à chaque modification et affiche le total en temps réel.
 
-le paiement suit ce flux : clic sur "payer avec NathBank", modal de confirmation avec le total et le nom de l'utilisateur, clic "confirmer" vers POST /api/transactions/payer, puis POST /api/commandes pour enregistrer la commande. le panier est vidé et une confirmation s'affiche avec le nouveau solde.
+le paiement suit ce flux : confirmation du montant, appel vers POST /api/transactions/payer, puis POST /api/commandes pour enregistrer la commande. le panier est vidé et une confirmation s'affiche.
 
-l'historique des commandes est accessible via un bouton dans la navigation, visible si connecté. un bouton de bascule permet de passer du mode clair au mode sombre via data-theme sur l'élément html.
+l'historique des commandes est accessible via la navigation, visible si connecté. un bouton permet de passer du mode clair au mode sombre.
 
 ### nathstore/admin.html
 
-panel d'administration accessible sur http://127.0.0.1:5500/nathstore/admin.html.
-connexion : email admin@nathstore.com, mot de passe admin2026. le token admin est stocké dans localStorage sous la clé adminToken.
+panel d'administration. connexion requise avec un compte admin.
 
-sections : catégories (cards, formulaire d'ajout, modifier, supprimer bloqué si des produits utilisent la catégorie), import JSON (onglet coller du JSON, onglet uploader un fichier, barre de progression, message de confirmation), ajouter un produit (formulaire manuel avec select de catégorie chargé dynamiquement), gérer les produits (tableau, modifier, supprimer). stats en haut : total produits, produits actifs, prix moyen, nombre de catégories.
+sections : catégories (ajout, modifier, supprimer bloqué si des produits l'utilisent), import JSON (coller du JSON ou uploader un fichier), ajouter un produit (formulaire manuel avec select de catégorie chargé dynamiquement), gérer les produits (tableau, modifier, supprimer). stats en haut : total produits, produits actifs, prix moyen, nombre de catégories.
 
 format JSON attendu pour l'import :
 ```
 [
   {
-    "nom": "Air Max 2026",
-    "emoji": "👟",
+    "nom": "exemple de produit",
+    "emoji": "📦",
     "categorie": "mode",
-    "prix": 89.99,
-    "description": "Sneakers ultra confortables",
-    "badge": "NEW"
+    "prix": 29.99,
+    "description": "description courte",
+    "badge": "nouveau"
   }
 ]
 ```
@@ -310,7 +306,7 @@ champs requis : nom, emoji, categorie, prix. champs optionnels : description, ba
 
 ### nathstore/admin-help.html
 
-guide d'import JSON. explique le format attendu, chaque champ, les catégories disponibles, des exemples copiables, les erreurs fréquentes et des conseils.
+guide d'import JSON. explique le format attendu, chaque champ, les catégories disponibles, des exemples complets, les erreurs fréquentes et des conseils.
 
 ---
 
@@ -318,7 +314,7 @@ guide d'import JSON. explique le format attendu, chaque champ, les catégories d
 
 ### server.js
 
-serveur Express avec CORS et cookie-parser. initialise la base de données sql.js dans nathnotes.db. configure une limitation de vitesse sur les routes d'authentification (cinq tentatives par IP par quinze minutes). lance le serveur sur le port 3001.
+serveur Express avec CORS et cookie-parser. initialise la base de données sql.js dans nathnotes.db. configure une limitation de vitesse sur les routes d'authentification. lance le serveur sur le port 3001.
 
 tables créées automatiquement :
 
@@ -326,9 +322,7 @@ tables créées automatiquement :
 - notes — titre, contenu, dossier, favori, suppression logicielle, horodatages
 - folders — nom, icône, couleur, utilisateur
 
-clé JWT : nathnotes_secret_key_2026
-authentification : cookie token httpOnly ou header Authorization: Bearer <token>
-expiration du token : sept jours
+une clé secrète JWT est utilisée. l'authentification passe par un cookie httpOnly ou un header Authorization: Bearer <token>. expiration du token : sept jours.
 
 ### routes API NathNotes
 
@@ -350,7 +344,7 @@ expiration du token : sept jours
 corps d'une note : { title, content, folder }
 dossiers par défaut : tout, travail, perso, idées.
 
-route racine : GET / retourne { message: "📝 NathNotes API", version: "1.0.0" }.
+route racine : GET / retourne un message de bienvenue et la version.
 
 ---
 
@@ -358,7 +352,7 @@ route racine : GET / retourne { message: "📝 NathNotes API", version: "1.0.0" 
 
 ### nathnotes/index.html
 
-application de notes style Apple Notes. trois panneaux : navigation des dossiers, liste des notes, éditeur de note. modes clair et sombre, recherche, favoris, corbeille, dossiers personnalisés avec icônes et couleurs. purification HTML avec DOMPurify. l'authentification utilise un cookie httpOnly géré automatiquement par le navigateur.
+application de notes. trois panneaux : navigation des dossiers, liste des notes, éditeur de note. modes clair et sombre, recherche, favoris, corbeille, dossiers personnalisés avec icônes et couleurs. purification HTML avec DOMPurify. l'authentification utilise un cookie httpOnly géré automatiquement par le navigateur.
 
 ### nathnotes/help.html
 
@@ -381,7 +375,7 @@ tables créées automatiquement :
 
 salons par défaut : général, random, nathbank.
 
-clé JWT : nathbank_secret_key (identique à NathBank)
+une clé secrète JWT est utilisée.
 
 ### routes API NathChat
 
@@ -407,7 +401,7 @@ clé JWT : nathbank_secret_key (identique à NathBank)
 
 ## frontend NathProject (index.html à la racine)
 
-page de présentation du projet. loader animé avec un MacBook en CSS 3D, navigation vers NathBank, NathNotes et NathStore, section hero avec les trois applications, cartes avec animations au survol, statistiques animées, barres de progression par langage, timeline interactive du développement et récupération des commits GitHub en temps réel via l'API backend. design sombre, verre dépoli, animations au défilement.
+page de présentation du projet. loader animé, navigation vers NathBank, NathNotes et NathStore, section avec les trois applications, cartes avec animations au survol, statistiques, barres de progression par langage, timeline du développement et récupération des commits GitHub en temps réel via l'API backend.
 
 url : http://127.0.0.1:5500/index.html
 
@@ -423,8 +417,6 @@ remplit la base de données de produits. depuis banque/ :
 node seed.js
 ```
 
-insère automatiquement vingt produits répartis dans quatre catégories de base (mode, tech, gaming, food).
-
 ### clear-*.js
 
 scripts dans banque/ pour supprimer des données spécifiques : clear-all.js, clear-users.js, clear-produits.js, clear-categories.js, clear-paniers.js, clear-commandes.js, clear-transactions.js.
@@ -435,50 +427,9 @@ lancement du serveur Banque sur Windows, en CMD et PowerShell.
 
 ---
 
-## comptes de test
+## comptes et accès
 
-| type | email | mot de passe | notes |
-|------|-------|--------------|-------|
-| utilisateur NathBank | nathanael@straumann.me | Nathlecon1234 | solde initial 100 € |
-| admin NathStore | nathanael@straumann.me | Nathlecon1234 | accès panel admin |
-| utilisateur NathNotes | nathanael@straumann.me | Nathlecon1234 | token dans cookie httpOnly |
-
----
-
-## clés secrètes JWT
-
-| type | secret | utilisé dans |
-|------|--------|--------------|
-| utilisateur NathBank | mon_secret_jwt_super_secure_123 | banque/middleware/auth.js |
-| admin NathStore | admin_secret_nathstore_456 | banque/routes/admin.js, banque/routes/categories.js |
-| NathNotes | nathnotes_secret_key_2026 | nathnotes/server.js |
-| NathChat | nathbank_secret_key | nathchat/server.js |
-
----
-
-## endpoints API rapide (NathBank)
-
-| méthode | route | auth |
-|---------|-------|------|
-| POST | /api/auth/register | — |
-| POST | /api/auth/login | — |
-| GET | /api/comptes/solde | JWT |
-| POST | /api/comptes/deposer | JWT |
-| POST | /api/transactions/payer | JWT |
-| GET | /api/transactions/historique | JWT |
-| GET | /api/admin/produits | public |
-| POST | /api/admin/produits | JWT admin |
-| PUT | /api/admin/produits/:id | JWT admin |
-| DELETE | /api/admin/produits/:id | JWT admin |
-| GET | /api/categories | public |
-| POST | /api/categories | JWT admin |
-| GET | /api/panier | JWT |
-| POST | /api/panier | JWT |
-| DELETE | /api/panier | JWT |
-| GET | /api/commandes | JWT |
-| POST | /api/commandes | JWT |
-| GET | /api/github-stats | — |
-| GET | /api/github-commits | — |
+les identifiants de test et les clés secrètes sont consignés dans le fichier ADMIN.md, qui ne doit pas être diffusé ni versionné avec des données réelles. chaque utilisateur crée son propre compte via la page d'inscription de NathBank.
 
 ---
 
@@ -502,9 +453,7 @@ git commit -m "description"
 git push origin main
 ```
 
-dépôt : https://github.com/Nathlecon/prjbank
-
-node_modules et les fichiers .db sont ignorés via .gitignore. après un clone, faire npm install dans chaque dossier backend (banque/, nathnotes/, nathchat/).
+le dépôt est configuré pour ignorer node_modules et les fichiers .db via .gitignore. après un clone, faire npm install dans chaque dossier backend (banque/, nathnotes/, nathchat/).
 
 ---
 
@@ -541,14 +490,14 @@ node_modules et les fichiers .db sont ignorés via .gitignore. après un clone, 
 
 flux d'un achat sur NathStore :
 
-1. l'utilisateur clique sur "+" et le système vérifie s'il est connecté
-2. s'il ne l'est pas, une modal de connexion s'ouvre, puis POST /api/auth/login
-3. le token JWT est stocké dans localStorage
-4. le panier est chargé depuis GET /api/panier
-5. chaque modification du panier est envoyée vers POST /api/panier, sauvegarde automatique
-6. clic sur "payer" vers POST /api/transactions/payer, qui débite le compte
-7. en cas de succès, POST /api/commandes enregistre la commande
-8. le panier est vidé, une confirmation s'affiche avec le nouveau solde
+1. l'utilisateur clique sur ajouter au panier et le système vérifie s'il est connecté
+2. s'il ne l'est pas, une modal de connexion s'ouvre
+3. le token JWT est stocké localement
+4. le panier est chargé depuis l'API
+5. chaque modification du panier est envoyée vers l'API, sauvegarde automatique
+6. clic sur payer vers l'API de transactions, qui débite le compte
+7. en cas de succès, l'API de commandes enregistre la commande
+8. le panier est vidé, une confirmation s'affiche
 
 ---
 
