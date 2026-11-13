@@ -37,6 +37,11 @@ function run(sql, params = []) {
   }
 }
 
+function lastInsertId() {
+  const res = db.exec("SELECT last_insert_rowid() as id");
+  return res[0].values[0][0];
+}
+
 function get(sql, params = []) {
   try {
     const stmt = db.prepare(sql);
@@ -176,7 +181,7 @@ app.post('/api/auth/register', async (req, res) => {
       [email, hashedPassword, name]
     );
     
-    const token = jwt.sign({ userId: result.lastInsertRowid }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: lastInsertId() }, JWT_SECRET, { expiresIn: '7d' });
     
     // Set httpOnly cookie
     res.cookie('token', token, {
@@ -272,7 +277,7 @@ app.post('/api/notes', authenticate, (req, res) => {
     [req.userId, title, content, folder]
   );
   
-  const note = get('SELECT * FROM notes WHERE id = ?', [result.lastInsertRowid]);
+  const note = get('SELECT * FROM notes WHERE id = ?', [lastInsertId()]);
   
   res.json(note);
 });
@@ -330,6 +335,16 @@ app.delete('/api/notes/:id/permanent', authenticate, (req, res) => {
 app.post('/api/notes/:id/restore', authenticate, (req, res) => {
   const { id } = req.params;
 
+  const note = get('SELECT * FROM notes WHERE id = ? AND user_id = ?', [id, req.userId]);
+  if (!note) {
+    return res.status(404).json({ error: 'Note non trouvée' });
+  }
+
+  run('UPDATE notes SET deleted = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [id]);
+
+  res.json({ success: true });
+});
+
 // GET /api/folders - récupérer les dossiers
 app.get('/api/folders', authenticate, (req, res) => {
   // Dossiers par défaut
@@ -362,7 +377,7 @@ app.post('/api/folders', authenticate, (req, res) => {
     [req.userId, name, icon, color]
   );
   
-  const folder = get('SELECT * FROM folders WHERE id = ?', [result.lastInsertRowid]);
+  const folder = get('SELECT * FROM folders WHERE id = ?', [lastInsertId()]);
   
   res.json({ ...folder, is_default: false });
 });

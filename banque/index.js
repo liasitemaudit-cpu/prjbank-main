@@ -29,7 +29,7 @@ app.use('/api/categories', categoriesRoutes);
 // === GITHUB STATS ===
 app.get('/api/github-stats', async (req, res) => {
   const token = process.env.GITHUB_TOKEN;
-  const repo = 'Nathlecon/prjbank';
+  const repo = 'liasitemaudit-cpu/prjbank-main';
   try {
     const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
     const [langRes, commitRes] = await Promise.all([
@@ -48,7 +48,7 @@ app.get('/api/github-stats', async (req, res) => {
 
 app.get('/api/github-commits', async (req, res) => {
   const token = process.env.GITHUB_TOKEN;
-  const repo = 'Nathlecon/prjbank';
+  const repo = 'liasitemaudit-cpu/prjbank-main';
   try {
     const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
     const response = await fetch('https://api.github.com/repos/' + repo + '/commits?per_page=10', { headers });

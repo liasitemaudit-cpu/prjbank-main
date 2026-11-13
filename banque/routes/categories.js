@@ -48,7 +48,7 @@ router.put('/:id', adminAuth, (req, res) => {
   const { nom, emoji, ordre } = req.body;
   if (!nom || !emoji) return res.status(400).json({ erreur: 'nom et emoji requis' });
 
-  const existant = db.get('SELECT id FROM categories WHERE id = ?', [req.params.id]);
+  const existant = get('SELECT id FROM categories WHERE id = ?', [req.params.id]);
   if (!existant) return res.status(404).json({ erreur: 'Catégorie introuvable' });
 
   if (!/^[a-z0-9-]+$/.test(nom)) {

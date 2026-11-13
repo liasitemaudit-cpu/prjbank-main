@@ -294,12 +294,12 @@
         const res = await fetch('http://localhost:3000/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ email, mot_de_passe: password })
         });
         const data = await res.json();
         if (!res.ok) { err.textContent = data.error || 'identifiants incorrects'; err.className = 'message error show'; btn.disabled = false; btn.textContent = 'se connecter'; return; }
         token = data.token;
-        currentUser = { userId: data.id, username: data.nom || username };
+        currentUser = { userId: data.nom, username: data.nom || username };
         localStorage.setItem('nathchat_token', token);
         localStorage.setItem('nathchat_user', JSON.stringify(currentUser));
         showApp();
